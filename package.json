@@ -1,0 +1,33 @@
+{
+  "name": "ae_api",
+  "version": "0.0.0",
+  "description": "Die API für das künftige arteigenschaften.ch",
+  "main": "index.js",
+  "scripts": {
+    "build": "gulp bildCouchapp",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/barbalex/ae_api.git"
+  },
+  "keywords": [
+    "arten",
+    "species",
+    "fauna",
+    "flora",
+    "moose",
+    "pilze"
+  ],
+  "author": "Alexander Gabriel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/barbalex/ae_api/issues"
+  },
+  "homepage": "https://github.com/barbalex/ae_api",
+  "dependencies": {
+    "gulp": "3.9.0",
+    "gulp-shell": "0.4.2",
+    "require-dir": "0.3.0"
+  }
+}

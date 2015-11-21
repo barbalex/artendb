@@ -1,0 +1,15 @@
+[
+    {
+        "description": "Zugang zur Datenbank",
+        "from" : "artendb/*",
+        "to" : "../../*"
+    },
+    {
+        "from" : "artendb/",
+        "to" : "../../"
+    },
+    {
+        "from": "/*",
+        "to": "*"
+    }
+]
