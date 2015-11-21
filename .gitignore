@@ -2,3 +2,4 @@ node_modules/
 ssl/
 couchPass.json
 ae_api.sublime-workspace
+npm-debug.log
