@@ -3,7 +3,7 @@
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](https://github.com/feross/standard)
 [![js-standard-style](https://img.shields.io/badge/license-ISC-brightgreen.svg)](https://github.com/FNSKtZH/artendb/blob/master/License.md)
 
-Das ist das Backend bzw. die Datenbank für die künftige neue ArtenDb.
+Das ist das Backend bzw. der Code für die Datenbank der künftigen neuen ArtenDb.
 Es enthält:
 
 * Die künftig noch benötigten bisherigen Views (für die Schnittstellen)
