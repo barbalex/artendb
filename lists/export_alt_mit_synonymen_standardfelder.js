@@ -17,7 +17,6 @@ function (head, req) {
   var ergaenzeObjektUmInformationenVonSynonymen = require('lists/lib/ergaenzeObjektUmInformationenVonSynonymen'),
     ergaenzeDsBsVonSynonym = require('lists/lib/ergaenzeDsBsVonSynonym'),
     fuegeObligatorischeFelderFuerAltEin = require('lists/lib/fuegeObligatorischeFelderFuerAltEin'),
-    _ = require('lists/lib/underscore'),
     row,
     objekt,
     exportObjekte = [],
@@ -60,7 +59,7 @@ function (head, req) {
 
       // Objekt zu Exportobjekten hinzufügen
       // wenn etwas versagte ist exportObjekt = {}
-      if (_.keys(exportObjekt).length > 0) exportObjekte.push(exportObjekt)
+      if (Object.keys(exportObjekt).length > 0) exportObjekte.push(exportObjekt)
 
       // arrays für sammlungen aus synonymen zurücksetzen
       beziehungssammlungenAusSynonymen = []
