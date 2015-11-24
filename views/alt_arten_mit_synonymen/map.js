@@ -22,16 +22,16 @@ function (doc) {
               if (doc.Beziehungssammlungen) {
                 // durch alle Beziehungssammlungen loopen
                 doc.Beziehungssammlungen.forEach(function (beziehungssammlung) {
-                  if (beziehungssammlung.Typ && beziehungssammlung.Typ === 'taxonomisch' && beziehungssammlung['Art der Beziehungen'] && beziehungssammlung['Art der Beziehungen'] === 'synonym' && beziehungssammlung.Beziehungen && beziehungssammlung.Beziehungen.length > 0) {
+                  if (beziehungssammlung.Typ && beziehungssammlung.Typ === 'taxonomisch' && beziehungssammlung['Art der Beziehungen'] && beziehungssammlung['Art der Beziehungen'] === 'synonym' && beziehungssammlung.Beziehungen) {
                     // jetzt durch alle synonymen Beziehungen loopen
                     beziehungssammlung.Beziehungen.forEach(function (beziehung) {
-                      if (beziehung.Beziehungspartner && beziehung.Beziehungspartner.length > 0) {
+                      if (beziehung.Beziehungspartner) {
                         // durch alle Beziehungspartner der synonymen Beziehungen loopen
-                        beziehung.Beziehungspartner.forEach(function (bez_partner) {
-                          if (bez_partner.GUID) {
+                        beziehung.Beziehungspartner.forEach(function (bezPartner) {
+                          if (bezPartner.GUID) {
                             // veranlassen, dass mit include_docs=true auch das Dokument dieses Synonyms gesendet wird
                             // der zweite key markiert, dass es ein Synonym ist
-                            emit([doc._id, 0], {_id: bez_partner.GUID})
+                            emit([doc._id, 0], {_id: bezPartner.GUID})
                           }
                         })
                       }

@@ -57,7 +57,7 @@ function (head, req) {
       }
     }
 
-    if (objekt.Eigenschaftensammlungen.length > 0) {
+    if (objekt.Eigenschaftensammlungen) {
 
       dsArtwert = _.find(objekt.Eigenschaftensammlungen, function (ds) {
         return ds.Name === 'ZH Artwert (aktuell)'
