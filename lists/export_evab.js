@@ -16,22 +16,25 @@ function (head, req) {
 
   var _ = require('lists/lib/underscore'),
     codiereFloraStatus = require('lists/lib/codiereFloraStatus'),
+    findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc'),
     row,
     Objekt,
     exportObjekte = [],
     exportObjekt,
     dsTaxonomie = {},
-    floraStatusCodiert
+    floraStatusCodiert,
+    standardtaxonomie
 
   while (row = getRow()) {
     Objekt = row.doc
+    standardtaxonomie = findStandardTaxonomyInDoc(Objekt)
 
     // exportobjekt gründen bzw. zurücksetzen
     exportObjekt = {}
 
     // dsTaxonomie bereitstellen
-    if (Objekt.Taxonomie && Objekt.Taxonomie.Eigenschaften) {
-      dsTaxonomie = Objekt.Taxonomie.Eigenschaften
+    if (standardtaxonomie && standardtaxonomie.Eigenschaften) {
+      dsTaxonomie = standardtaxonomie.Eigenschaften
     }
 
     // bei allen Gruppen gleiche Eigenschaften setzen

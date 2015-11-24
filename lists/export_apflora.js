@@ -14,6 +14,7 @@ function (head, req) {
   })
 
   var _ = require('lists/lib/underscore'),
+    findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc'),
     row,
     objekt,
     exportObjekte = [],
@@ -43,21 +44,16 @@ function (head, req) {
     exportObjekt.KefKontrolljahr = null
 
     // Felder aktualisieren, wo Daten vorhanden
-    if (objekt.Taxonomie && objekt.Taxonomie.Eigenschaften) {
-      dsTaxonomie = objekt.Taxonomie.Eigenschaften
-      exportObjekt.TaxonomieId = dsTaxonomie['Taxonomie ID']
-      if (dsTaxonomie.Familie) {
-        exportObjekt.Familie = dsTaxonomie.Familie
-      }
-      if (dsTaxonomie['Artname vollständig']) {
-        exportObjekt.Artname = dsTaxonomie['Artname vollständig']
-      }
-      // wird beim Export nach EvAB benutzt
-      if (dsTaxonomie['Name Deutsch']) {
-        exportObjekt.NameDeutsch = dsTaxonomie['Name Deutsch']
-      }
-      if (dsTaxonomie.Status) {
-        exportObjekt.Status = dsTaxonomie.Status
+    if (objekt.Taxonomien) {
+      const standardtaxonomie = findStandardTaxonomyInDoc(objekt)
+      if (standardtaxonomie && standardtaxonomie.Eigenschaften) {
+        dsTaxonomie = standardtaxonomie.Eigenschaften
+        exportObjekt.TaxonomieId = dsTaxonomie['Taxonomie ID']
+        if (dsTaxonomie.Familie) exportObjekt.Familie = dsTaxonomie.Familie
+        if (dsTaxonomie['Artname vollständig']) exportObjekt.Artname = dsTaxonomie['Artname vollständig']
+        // wird beim Export nach EvAB benutzt
+        if (dsTaxonomie['Name Deutsch']) exportObjekt.NameDeutsch = dsTaxonomie['Name Deutsch']
+        if (dsTaxonomie.Status) exportObjekt.Status = dsTaxonomie.Status
       }
     }
 

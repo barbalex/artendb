@@ -5,7 +5,8 @@
 
 'use strict'
 
-var _ = require('lists/lib/underscore')
+var _ = require('lists/lib/underscore'),
+  findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc')
 
 function isInt (value) {
   return !isNaN(value) && parseInt(Number(value), 10) == value && !isNaN(parseInt(value, 10))
@@ -13,24 +14,25 @@ function isInt (value) {
 
 module.exports = function (objekt, exportObjekt) {
   var dsZhArtwert,
-    dsZhGis
+    dsZhGis,
+    standardtaxonomie = findStandardTaxonomyInDoc(objekt)
 
   // übergebene Variabeln prüfen
   if (!objekt) return {}
-  if (!objekt.Taxonomie) return {}
-  if (!objekt.Taxonomie.Eigenschaften) return {}
+  if (!standardtaxonomie) return {}
+  if (!standardtaxonomie.Eigenschaften) return {}
   if (!exportObjekt) exportObjekt = {}
 
   // sicherstellen, dass GUID korrekt formattiert ist
   var isGuidFormatCorrect = new RegExp('^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$').test(objekt._id)
   if (!isGuidFormatCorrect) return {}
   // sicherstellen, dass Taxonomie ID ein integer ist
-  if (!isInt(objekt.Taxonomie.Eigenschaften['Taxonomie ID'])) return {}
+  if (!isInt(standardtaxonomie.Eigenschaften['Taxonomie ID'])) return {}
 
   // Felder ergänzen
   // immer sicherstellen, dass das Feld existiert
   exportObjekt.idArt = '{' + objekt._id + '}'
-  exportObjekt.ref = objekt.Taxonomie.Eigenschaften['Taxonomie ID']
+  exportObjekt.ref = standardtaxonomie.Eigenschaften['Taxonomie ID']
 
   dsZhGis = _.find(objekt.Eigenschaftensammlungen, function (ds) {
       return ds.Name === 'ZH GIS'
@@ -50,18 +52,18 @@ module.exports = function (objekt, exportObjekt) {
     exportObjekt.distance = 500
   }
 
-  var artname = objekt.Taxonomie.Eigenschaften.Artname
+  var artname = standardtaxonomie.Eigenschaften.Artname
   if (artname && artname !== '(kein Artname)') {
-    exportObjekt.nameLat = objekt.Taxonomie.Eigenschaften.Artname.substring(0, 255)
-  } else if (objekt.Taxonomie.Eigenschaften.Gattung) {
-    var art = objekt.Taxonomie.Eigenschaften.Gattung + ' ' + objekt.Taxonomie.Eigenschaften.Art
+    exportObjekt.nameLat = standardtaxonomie.Eigenschaften.Artname.substring(0, 255)
+  } else if (standardtaxonomie.Eigenschaften.Gattung) {
+    var art = standardtaxonomie.Eigenschaften.Gattung + ' ' + standardtaxonomie.Eigenschaften.Art
     exportObjekt.nameLat = art.substring(0, 255)
   } else {
     exportObjekt.nameLat = '(kein Artname)'
   }
 
-  if (objekt.Taxonomie.Eigenschaften['Name Deutsch']) {
-    exportObjekt.nameDeu = objekt.Taxonomie.Eigenschaften['Name Deutsch'].substring(0, 255)
+  if (standardtaxonomie.Eigenschaften['Name Deutsch']) {
+    exportObjekt.nameDeu = standardtaxonomie.Eigenschaften['Name Deutsch'].substring(0, 255)
   } else {
     exportObjekt.nameDeu = ''
   }

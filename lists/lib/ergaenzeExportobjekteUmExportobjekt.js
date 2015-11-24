@@ -4,7 +4,8 @@ var _ = require('lists/lib/underscore'),
   filtereBeziehungspartner = require('lists/lib/filtereBeziehungspartner'),
   beurteileFilterkriterien = require('lists/lib/beurteileFilterkriterien'),
   convertToCorrectType = require('lists/lib/convertToCorrectType'),
-  fuegeObligatorischeFelderFuerAltEin = require('lists/lib/fuegeObligatorischeFelderFuerAltEin')
+  fuegeObligatorischeFelderFuerAltEin = require('lists/lib/fuegeObligatorischeFelderFuerAltEin'),
+  findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc')
 
 // baut die Export-Objekte auf für alle export-lists
 // benötigt Objekt und felder
@@ -12,7 +13,8 @@ var _ = require('lists/lib/underscore'),
 // exportFuer: ermöglicht anpassungen für spezielle Exporte, z.b. für das Artenlistentool
 module.exports = function (objekt, felder, bezInZeilen, fasseTaxonomienZusammen, filterkriterien, exportObjekte, exportFuer) {
   var exportObjekt = {},
-    schonKopiert = false
+    schonKopiert = false,
+    standardtaxonomie = findStandardTaxonomyInDoc(objekt)
 
   // es müssen Felder übergeben worden sein
   // wenn nicht, aufhören
@@ -56,7 +58,7 @@ module.exports = function (objekt, felder, bezInZeilen, fasseTaxonomienZusammen,
 
     // Taxonomie: Felder übernehmen
     // 2014.06.15: zweite Bedingung ausgeklammert, weil die Felder nur geliefert wurden, wenn zusammenfassend true war
-    // war: /* && (fasseTaxonomienZusammen || feld.DsName === objekt.Taxonomie.Name)*/
+    // war: /* && (fasseTaxonomienZusammen || feld.DsName === standardtaxonomie.Name)*/
     if (feld.DsTyp === 'Taxonomie') {
       // Leerwert setzen. Wird überschrieben, falls danach ein Wert gefunden wird
       if (fasseTaxonomienZusammen) {
@@ -65,11 +67,11 @@ module.exports = function (objekt, felder, bezInZeilen, fasseTaxonomienZusammen,
         exportObjekt[exportFeldname] = ''
       }
       // wenn im objekt das zu exportierende Feld vorkommt, den Wert übernehmen
-      if (objekt.Taxonomie && objekt.Taxonomie.Eigenschaften && objekt.Taxonomie.Eigenschaften[feld.Feldname] !== undefined) {
+      if (standardtaxonomie && standardtaxonomie.Eigenschaften && standardtaxonomie.Eigenschaften[feld.Feldname] !== undefined) {
         if (fasseTaxonomienZusammen) {
-          exportObjekt['Taxonomie(n): ' + feld.Feldname] = objekt.Taxonomie.Eigenschaften[feld.Feldname]
+          exportObjekt['Taxonomie(n): ' + feld.Feldname] = standardtaxonomie.Eigenschaften[feld.Feldname]
         } else {
-          exportObjekt[exportFeldname] = objekt.Taxonomie.Eigenschaften[feld.Feldname]
+          exportObjekt[exportFeldname] = standardtaxonomie.Eigenschaften[feld.Feldname]
         }
       }
     }

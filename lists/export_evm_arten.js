@@ -10,6 +10,7 @@ function (head, req) {
   })
 
   var _ = require ('lists/lib/underscore'),
+    findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc'),
     row,
     doc,
     exportJson = {},
@@ -17,7 +18,8 @@ function (head, req) {
     eigenschaftensammlungZhGis,
     beziehungssammlungOffizielleArt,
     beziehungssammlungAkzeptierteReferenz,
-    k
+    k,
+    standardtaxonomie
 
   exportJson.docs = []
 
@@ -26,6 +28,7 @@ function (head, req) {
     art = {}
     art._id = doc._id
     art.Typ = 'Arteigenschaft'
+    standardtaxonomie = findStandardTaxonomyInDoc(doc)
 
     eigenschaftensammlungZhGis = _.find(doc.Eigenschaftensammlungen, function (eigenschaftensammlung) {
       return eigenschaftensammlung.Name === 'ZH GIS'
@@ -34,8 +37,8 @@ function (head, req) {
       art.ArtGruppe = eigenschaftensammlungZhGis.Eigenschaften['GIS-Layer'].replace('ae', 'ä').replace('oe', 'ö').replace('ue', 'ü')
     }
 
-    art['Taxonomie ID'] = doc.Taxonomie.Eigenschaften['Taxonomie ID']
-    art.Artname = doc.Taxonomie.Eigenschaften['Artname vollständig']
+    art['Taxonomie ID'] = standardtaxonomie.Eigenschaften['Taxonomie ID']
+    art.Artname = standardtaxonomie.Eigenschaften['Artname vollständig']
 
     // Hinweis Verwandschaft
     if (doc.Gruppe === 'Flora' && doc.Beziehungssammlungen) {
