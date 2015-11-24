@@ -11,4 +11,4 @@ const request = `couchapp push http://${userName}:${password}@127.0.0.1:5984/ae`
 
 console.log('request: ', request)
 
-gulp.task('build_couchapp', shell.task([request]))
+gulp.task('buildCouchapp', shell.task([request]))

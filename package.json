@@ -4,7 +4,7 @@
   "description": "Die API für das künftige arteigenschaften.ch",
   "main": "index.js",
   "scripts": {
-    "build": "gulp bildCouchapp",
+    "build": "gulp buildCouchapp",
     "test": "test"
   },
   "repository": {
