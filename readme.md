@@ -6,8 +6,8 @@
 Das ist das Backend bzw. der Code für die Datenbank der künftigen neuen ArtenDb.
 Es enthält:
 
-* Die künftig noch benötigten bisherigen Views (für die Schnittstellen)
-* Die künftig noch für die Schnittstellen benötigten Lists
+* Die künftig noch für die Schnittstellen benötigten bisherigen Views
+* Die entsprechenden Lists
 * rewrites
 * validate_doc_update, das stark ausgebaut wird
 
