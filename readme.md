@@ -10,5 +10,9 @@ Es enthält:
 * Die entsprechenden Lists
 * rewrites
 * validate_doc_update, das stark ausgebaut wird
+* einen Webserver (hapi.js)
+* Schnittstellen (via hapi.js), um Rollen von usern zu ändern, wenn Organisationen ihnen Rechte erteilen
 
 Die Views, die von der neuen ArtenDb verwendet werden, werden mit [ae_views](https://github.com/barbalex/ae_views) erzeugt.
+
+Künftig soll dieses Backend alle Funktionen übernehmen, welche heute noch die CouchApp wahrnimmt. Vor allem sind das die Schnittstellen für EvAB, ALT und apflora.ch.
