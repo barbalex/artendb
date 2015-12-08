@@ -10,8 +10,8 @@ Es enthält:
 * Die entsprechenden Lists
 * rewrites
 * validate_doc_update, das stark ausgebaut wird
-* einen Webserver (hapi.js)
-* Schnittstellen (via hapi.js), um Rollen von usern zu ändern, wenn Organisationen ihnen Rechte erteilen
+* bald: einen Webserver (hapi.js)
+* bald: Schnittstellen (via hapi.js), um Rollen von usern zu ändern, wenn Organisationen ihnen Rechte erteilen
 
 Die Views, die von der neuen ArtenDb verwendet werden, werden mit [ae_views](https://github.com/barbalex/ae_views) erzeugt.
 
