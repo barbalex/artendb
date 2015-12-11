@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "gulp buildCouchapp",
-    "test": "test"
+    "test": "standard",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -28,7 +29,10 @@
   "dependencies": {
     "gulp": "3.9.0",
     "gulp-shell": "0.4.2",
-    "hapi": "^11.1.2",
-    "require-dir": "0.3.0"
+    "hapi": "11.1.2",
+    "lodash": "3.10.1",
+    "pouchdb": "5.1.0",
+    "require-dir": "0.3.0",
+    "standard": "^5.4.1"
   }
 }
