@@ -28,6 +28,7 @@
   "dependencies": {
     "gulp": "3.9.0",
     "gulp-shell": "0.4.2",
+    "hapi": "^11.1.2",
     "require-dir": "0.3.0"
   }
 }
