@@ -62,7 +62,7 @@ function(newDoc, oldDoc, userCtx, secObj) {
    *   - does user have correct role to remove it?
    * 
    * - build array of all other collections. Loop them and check:
-   *   - was the collection changed? If true:
+   *   - was the collection changed (https://lodash.com/docs#isEqual)? If true:
    *     - does user have correct role to change it?
    *
    */
