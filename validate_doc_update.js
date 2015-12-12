@@ -3,6 +3,11 @@ function(newDoc, oldDoc, userCtx, secObj) {
   var _ = require('lists/lib/underscore')
 
   /**
+   * make sure user is logged in
+   */
+  if (!userCtx.name) throw({forbidden: 'Sie müssen angemeldet sein'})
+
+  /**
    * make sure guids of objects are formatted correctly
    */
   var isGuidFormatCorrect = new RegExp('^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$').test(newDoc._id)
