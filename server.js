@@ -18,6 +18,7 @@ const serverOptionsDevelopment = {
 }
 
 const Hapi = require('hapi')
+const doesUserExist = require('./src/doesUserExist.js')
 const getUserRoles = require('./src/getUserRoles.js')
 const addUserRoles = require('./src/addUserRoles.js')
 const removeUserRoles = require('./src/removeUserRoles.js')
@@ -34,6 +35,12 @@ server.connection({
 server.start((error) => {
   if (error) throw error
   console.log('Server running at:', server.info.uri)
+})
+
+server.route({
+  method: 'GET',
+  path: '/doesuserexist/{username}',
+  handler: doesUserExist
 })
 
 server.route({
