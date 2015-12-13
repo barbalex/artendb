@@ -28,7 +28,7 @@
   "homepage": "https://github.com/barbalex/ae_api",
   "dependencies": {
     "gulp": "3.9.0",
-    "gulp-shell": "0.4.2",
+    "gulp-shell": "0.5.1",
     "hapi": "11.1.2",
     "lodash": "3.10.1",
     "pouchdb": "5.1.0",
