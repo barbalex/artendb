@@ -45,12 +45,21 @@ function(newDoc, oldDoc, userCtx, secObj) {
     var lrWriterRole = org + ' lr'
     return _.contains(userCtx.roles, lrWriterRole)
   }
+  var taxAdded = []
+  var taxRemoved = []
+  var esAdded = []
+  var esRemoved = []
+  var bsAdded = []
+  var bsRemoved = []
+  var taxNamesInOldDoc
+  var esNamesInOldDoc
+  var bsNamesInOldDoc
 
   // make sure user is logged in
   if (!userCtx.name) throw({unauthorized: 'Sie müssen angemeldet sein'})
 
   /**
-   * If user is admin, wave him through without all the computations that follow?
+   * If user is admin, wave him through without all the tests that follow?
    * probably not a good idea
    */
 
@@ -63,15 +72,17 @@ function(newDoc, oldDoc, userCtx, secObj) {
     // if doc is new, user needs to be one of: orgAdmin, taxWriter, dbAdmin, serverAdmin
     if (docIsNew) {
       organization = newDoc['Organisation mit Schreibrecht']
-      if (!isUserOrgAdmin(organization) && !isUserTaxWriter(organization) && !userIsServerOrDatabaseAdmin) {
-        throw({forbidden: 'Sie können nur neue Objekte schaffen, wenn eine Organisation Ihnen dieses Recht erteilt hat'})
+      if (newDoc.Gruppe && newDoc.Gruppe === 'Lebensräume' && isUserLrWriter(organization)) {
+        // this is o.k.
+      } else if (!isUserOrgAdmin(organization) && !isUserTaxWriter(organization) && !userIsServerOrDatabaseAdmin) {
+        throw({unauthorized: 'Sie können nur neue Objekte schaffen, wenn eine Organisation Ihnen dieses Recht erteilt hat'})
       }
     }
     // if doc was deleted, user needs to be one of: orgAdmin, dbAdmin or serverAdmin
     if (docWasDeleted) {
       organization = newDoc['Organisation mit Schreibrecht']
       if (!isUserOrgAdmin(organization) && !userIsServerOrDatabaseAdmin) {
-        throw({forbidden: 'Sie können nur neue Objekte schaffen, wenn eine Organisation Ihnen dieses Recht erteilt hat'})
+        throw({unauthorized: 'Sie können nur neue Objekte schaffen, wenn eine Organisation Ihnen dieses Recht erteilt hat'})
       }
     }
     // make sure guids are formatted correctly
@@ -113,6 +124,101 @@ function(newDoc, oldDoc, userCtx, secObj) {
       if (!esZhGis.Eigenschaften['GIS-Layer']) throw({forbidden: betrachtungsdistanzMessage})
       if (esZhGis.Eigenschaften['Betrachtungsdistanz (m)'] === undefined) throw({forbidden: betrachtungsdistanzMessage})
     }
+    if (existingDocWasChanged) {
+      // analyse changes made to object's taxonomies, property and relation collections
+      taxNamesInOldDoc = _.pluck(oldDoc.Taxonomien, 'Name')
+      esNamesInOldDoc = _.pluck(oldDoc.Eigenschaftensammlungen, 'Name')
+      bsNamesInOldDoc = _.pluck(oldDoc.Beziehungssammlungen, 'Name')
+      taxNamesInNewDoc = _.pluck(newDoc.Taxonomien, 'Name')
+      esNamesInNewDoc = _.pluck(newDoc.Eigenschaftensammlungen, 'Name')
+      bsNamesInNewDoc = _.pluck(newDoc.Beziehungssammlungen, 'Name')
+      // build an array of tax / es / bs that were added
+      newDoc.Taxonomien.forEach(function (tax) {
+        if (tax.Name) {
+          var taxInOldDoc = _.find(taxNamesInOldDoc, function (oldDocTaxName) {
+            return oldDocTaxName === tax.Name
+          })
+          if (!taxInOldDoc) taxAdded.push(tax)
+        }
+      })
+      newDoc.Eigenschaftensammlungen.forEach(function (es) {
+        if (es.Name) {
+          var esInOldDoc = _.find(esNamesInOldDoc, function (oldDocEsName) {
+            return oldDocEsName === es.Name
+          })
+          if (!esInOldDoc) esAdded.push(es)
+        }
+      })
+      newDoc.Beziehungssammlungen.forEach(function (bs) {
+        if (bs.Name) {
+          var bsInOldDoc = _.find(bsNamesInOldDoc, function (oldDocBsName) {
+            return oldDocBsName === bs.Name
+          })
+          if (!bsInOldDoc) bsAdded.push(bs)
+        }
+      })
+      // build an array of es / bs that were removed
+      oldDoc.Taxonomien.forEach(function (tax) {
+        if (tax.Name) {
+          var taxInNewDoc = _.find(taxNamesInNewDoc, function (newDocTaxName) {
+            return newDocTaxName === tax.Name
+          })
+          if (!taxInNewDoc) taxRemoved.push(tax)
+        }
+      })
+      oldDoc.Eigenschaftensammlungen.forEach(function (es) {
+        if (es.Name) {
+          var esInNewDoc = _.find(esNamesInNewDoc, function (newDocEsName) {
+            return newDocEsName === es.Name
+          })
+          if (!esInNewDoc) esRemoved.push(es)
+        }
+      })
+      oldDoc.Beziehungssammlungen.forEach(function (bs) {
+        if (bs.Name) {
+          var bsInNewDoc = _.find(bsNamesInNewDoc, function (newDocBsName) {
+            return newDocBsName === bs.Name
+          })
+          if (!bsInNewDoc) bsRemoved.push(bs)
+        }
+      })
+      // build an array of tax / es / bs that were changed
+      newDoc.Taxonomien.forEach(function (tax) {
+        if (tax.Name) {
+          var taxInOldDoc = _.find(oldDoc.Taxonomien, function (oldDocTax) {
+            return oldDocTax.Name && oldDocTax.Name === tax.Name
+          })
+          if (taxInOldDoc) {
+
+          }
+        }
+      })
+      newDoc.Eigenschaftensammlungen.forEach(function (es) {
+        if (es.Name) {
+          var esInOldDoc = _.find(oldDoc.Eigenschaftensammlungen, function (oldDocEs) {
+            return oldDocEs.Name && oldDocEs.Name === es.Name
+          })
+          if (esInOldDoc) {
+
+          }
+        }
+      })
+      newDoc.Beziehungssammlungen.forEach(function (bs) {
+        if (bs.Name) {
+          var bsInOldDoc = _.find(oldDoc.Beziehungssammlungen, function (oldDocBs) {
+            return oldDocBs.Name && oldDocBs.Name === bs.Name
+          })
+          if (bsInOldDoc) {
+            
+          }
+        }
+      })
+    }
+  } else {
+    // this is a doc of type !== Objekt
+    if (!userIsServerOrDatabaseAdmin) {
+        throw({unauthorized: 'Nur Datenbank- oder Server-Admins dürfen Dokumente verändern, die nicht Objekte sind'})
+      }
   }
 
   /**
