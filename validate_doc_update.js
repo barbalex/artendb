@@ -57,6 +57,9 @@ function(newDoc, oldDoc, userCtx, secObj) {
   var taxNamesInOldDoc
   var esNamesInOldDoc
   var bsNamesInOldDoc
+  var taxNamesInNewDoc
+  var esNamesInNewDoc
+  var bsNamesInNewDoc
 
   // make sure user is logged in
   if (!userCtx.name) throw({unauthorized: 'Sie müssen angemeldet sein'})
