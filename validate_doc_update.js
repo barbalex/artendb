@@ -9,7 +9,7 @@ function(newDoc, oldDoc, userCtx, secObj) {
   var docWasDeleted = newDoc._deleted === true
   var existingDocWasChanged = !!oldDoc
   var dbRoles = secObj.admins.roles
-  var isUserServerOrDatabaseAdmin = function (userCtx, secObj) {
+  var isUserServerOrDatabaseAdmin = function () {
     // see if the user is a server admin
     if (_.contains(userCtx.roles, '_admin')) return true // server admin
     // see if user is a database admin specified by name
@@ -24,10 +24,27 @@ function(newDoc, oldDoc, userCtx, secObj) {
     }
     return false // default to no admin
   }
-  var userIsServerOrDatabaseAdmin = isUserServerOrDatabaseAdmin(userCtx, secObj)
+  var userIsServerOrDatabaseAdmin = isUserServerOrDatabaseAdmin()
   var isGuidFormatCorrect = new RegExp('^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$').test(newDoc._id)
   var guidFormatMessage = 'Das Feld "_id" des Objekts muss folgendermassen zusammengesetzt sein:\n- 32 Zeichen in 5 Gruppen,\n- diese jeweils 8, 4, 4, 4 und 12 Zeichen lang,\n- getrennt durch Bindestriche,\n- erlaubt sind Zeichen zwischen 0 bis 9, a bis f und A bis F.\n\nBeispiel: b8b51fb6-fafc-423a-9a90-f3111b00c6bb'
   var betrachtungsdistanzMessage = 'Jede Art der Gruppen "Fauna" und "Flora" braucht ein GIS-Layer und eine Betrachtungsdistanz, d.h.:\n- eine Eigenschaft "Eigenschaftensammlungen" (ein Array)\n- darin eine Eigenschaftensammlung (= Objekt) mit den nötigen Attributen\n\nSiehe diesen Link:\nhttps://gist.github.com/barbalex/d98aad9a96978b137dde\nbzw. dieses vollständige Beispiel:\nhttps://gist.github.com/barbalex/9836162'
+  var organization
+  var isUserOrgAdmin = function (org) {
+    var orgAdminRole = org + ' org'
+    return _.contains(userCtx.roles, orgAdminRole)
+  }
+  var isUserTaxWriter = function (org) {
+    var taxWriterRole = org + ' tax'
+    return _.contains(userCtx.roles, taxWriterRole)
+  }
+  var isUserEsWriter = function (org) {
+    var esWriterRole = org + ' es'
+    return _.contains(userCtx.roles, esWriterRole)
+  }
+  var isUserLrWriter = function (org) {
+    var lrWriterRole = org + ' lr'
+    return _.contains(userCtx.roles, lrWriterRole)
+  }
 
   // make sure user is logged in
   if (!userCtx.name) throw({unauthorized: 'Sie müssen angemeldet sein'})
@@ -39,13 +56,27 @@ function(newDoc, oldDoc, userCtx, secObj) {
 
   // check objects
   if (newDoc.Typ && newDoc.Typ === 'Objekt') {
-    // make sure guids are formatted correctly
-    if (!isGuidFormatCorrect) {
-      throw({forbidden: guidFormatMessage})
-    }
     // ensure field "Organisation mit Schreibrecht"
     if (!newDoc['Organisation mit Schreibrecht']) {
       throw({forbidden: 'Objekte müssen das Feld "Organisation mit Schreibrecht" enthalten'})
+    }
+    // if doc is new, user needs to be one of: orgAdmin, taxWriter, dbAdmin, serverAdmin
+    if (docIsNew) {
+      organization = newDoc['Organisation mit Schreibrecht']
+      if (!isUserOrgAdmin(organization) && !isUserTaxWriter(organization) && !userIsServerOrDatabaseAdmin) {
+        throw({forbidden: 'Sie können nur neue Objekte schaffen, wenn eine Organisation Ihnen dieses Recht erteilt hat'})
+      }
+    }
+    // if doc was deleted, user needs to be one of: orgAdmin, dbAdmin or serverAdmin
+    if (docWasDeleted) {
+      organization = newDoc['Organisation mit Schreibrecht']
+      if (!isUserOrgAdmin(organization) && !userIsServerOrDatabaseAdmin) {
+        throw({forbidden: 'Sie können nur neue Objekte schaffen, wenn eine Organisation Ihnen dieses Recht erteilt hat'})
+      }
+    }
+    // make sure guids are formatted correctly
+    if (!isGuidFormatCorrect) {
+      throw({forbidden: guidFormatMessage})
     }
     // ensure field "Taxonomien"
     if (!newDoc.Taxonomien) {
@@ -89,12 +120,6 @@ function(newDoc, oldDoc, userCtx, secObj) {
    * user needs the correct role
    *
    * This is the plan:
-   * 
-   * - check if doc is new. If true:
-   *   - does user have correct role to create it?
-   *
-   * - check if doc was deleted. If true:
-   *   - does user have correct role to delete it? (= do his roles contain 'orgname org' / lr)
    *
    * repeat for pcs, rcs, taxonomies:
    * - build array of collections that were added. Loop them and check:
