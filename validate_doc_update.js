@@ -2,7 +2,7 @@
  * see: http://docs.couchdb.org/en/1.6.1/couchapp/ddocs.html#vdufun
  */
 
-function(newDoc, oldDoc, userCtx, secObj) {
+function (newDoc, oldDoc, userCtx, secObj) {
 
   var _ = require('lists/lib/underscore')
   var docIsNew = !oldDoc
