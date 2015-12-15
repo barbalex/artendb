@@ -7,9 +7,9 @@
 var myTypeOf = require('lists/lib/myTypeOf')
 
 module.exports = function (feldwert, filterwert, vergleichsoperator) {
-  if (vergleichsoperator === 'kein' && feldwert == filterwert) { return true }
+  if (vergleichsoperator === 'kein' && feldwert == filterwert) { return true } // eslint-disable-line eqeqeq
   if (vergleichsoperator === 'kein' && myTypeOf(feldwert) === 'string' && feldwert.indexOf(filterwert) >= 0) { return true }
-  if (vergleichsoperator === '=' && feldwert == filterwert) { return true }
+  if (vergleichsoperator === '=' && feldwert == filterwert) { return true } // eslint-disable-line eqeqeq
   if (vergleichsoperator === '>' && feldwert > filterwert) { return true }
   if (vergleichsoperator === '>=' && feldwert >= filterwert) { return true }
   if (vergleichsoperator === '<' && feldwert < filterwert) { return true }

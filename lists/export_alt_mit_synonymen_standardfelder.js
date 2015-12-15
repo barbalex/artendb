@@ -14,17 +14,17 @@ function (head, req) {
     }
   })
 
-  var ergaenzeObjektUmInformationenVonSynonymen = require('lists/lib/ergaenzeObjektUmInformationenVonSynonymen'),
-    ergaenzeDsBsVonSynonym = require('lists/lib/ergaenzeDsBsVonSynonym'),
-    fuegeObligatorischeFelderFuerAltEin = require('lists/lib/fuegeObligatorischeFelderFuerAltEin'),
-    row,
-    objekt,
-    exportObjekte = [],
-    exportObjekt,
-    gruppen,
-    beziehungssammlungenAusSynonymen,
-    datensammlungenAusSynonymen,
-    ergänzeDsBsVonSynonymReturn
+  var ergaenzeObjektUmInformationenVonSynonymen = require('lists/lib/ergaenzeObjektUmInformationenVonSynonymen')
+  var ergaenzeDsBsVonSynonym = require('lists/lib/ergaenzeDsBsVonSynonym')
+  var fuegeObligatorischeFelderFuerAltEin = require('lists/lib/fuegeObligatorischeFelderFuerAltEin')
+  var row
+  var objekt
+  var exportObjekte = []
+  var exportObjekt
+  var gruppen
+  var beziehungssammlungenAusSynonymen
+  var datensammlungenAusSynonymen
+  var ergänzeDsBsVonSynonymReturn
 
   // arrays für sammlungen aus synonymen gründen
   beziehungssammlungenAusSynonymen = []

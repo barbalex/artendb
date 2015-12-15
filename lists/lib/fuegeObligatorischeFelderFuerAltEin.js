@@ -5,17 +5,17 @@
 
 'use strict'
 
-var _ = require('lists/lib/underscore'),
-  findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc')
+var _ = require('lists/lib/underscore')
+var findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc')
 
 function isInt (value) {
-  return !isNaN(value) && parseInt(Number(value), 10) == value && !isNaN(parseInt(value, 10))
+  return !isNaN(value) && parseInt(Number(value), 10) == value && !isNaN(parseInt(value, 10))  // eslint-disable-line eqeqeq
 }
 
 module.exports = function (objekt, exportObjekt) {
-  var dsZhArtwert,
-    dsZhGis,
-    standardtaxonomie = findStandardTaxonomyInDoc(objekt)
+  var dsZhArtwert
+  var dsZhGis
+  var standardtaxonomie = findStandardTaxonomyInDoc(objekt)
 
   // übergebene Variabeln prüfen
   if (!objekt) return {}
@@ -35,8 +35,8 @@ module.exports = function (objekt, exportObjekt) {
   exportObjekt.ref = standardtaxonomie.Eigenschaften['Taxonomie ID']
 
   dsZhGis = _.find(objekt.Eigenschaftensammlungen, function (ds) {
-      return ds.Name === 'ZH GIS'
-    }) || {}
+    return ds.Name === 'ZH GIS'
+  }) || {}
 
   if (dsZhGis && dsZhGis.Eigenschaften && dsZhGis.Eigenschaften['GIS-Layer']) {
     exportObjekt.gisLayer = dsZhGis.Eigenschaften['GIS-Layer'].substring(0, 50)
@@ -69,8 +69,8 @@ module.exports = function (objekt, exportObjekt) {
   }
 
   dsZhArtwert = _.find(objekt.Eigenschaftensammlungen, function (ds) {
-      return ds.Name === 'ZH Artwert (aktuell)'
-    }) || {}
+    return ds.Name === 'ZH Artwert (aktuell)'
+  }) || {}
 
   if (dsZhArtwert && dsZhArtwert.Eigenschaften && (dsZhArtwert.Eigenschaften.Artwert || dsZhArtwert.Eigenschaften.Artwert === 0) && isInt(dsZhArtwert.Eigenschaften.Artwert)) {
     exportObjekt.artwert = dsZhArtwert.Eigenschaften.Artwert

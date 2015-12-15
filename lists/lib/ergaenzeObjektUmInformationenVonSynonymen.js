@@ -5,10 +5,10 @@ module.exports = function (objekt, datensammlungenAusSynonymen, beziehungssammlu
   // allfällige DS und BS aus Synonymen anhängen
   // zuerst DS
   // eine Liste der im objekt enthaltenen DsNamen erstellen
-  var dsNamen = [],
-    bsNamen = [],
-    dsAusSynName2,
-    bsAusSynName2
+  var dsNamen = []
+  var bsNamen = []
+  var dsAusSynName2
+  var bsAusSynName2
 
   if (objekt.Eigenschaftensammlungen) {
     objekt.Eigenschaftensammlungen.forEach(function (datensammlung) {

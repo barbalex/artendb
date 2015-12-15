@@ -3,7 +3,7 @@
  * produziert die API für ALT gemäss Vorgaben der EBP
  */
 
- function (head, req) {
+function (head, req) {
   'use strict'
 
   start({
@@ -14,21 +14,21 @@
     }
   })
 
-  var ergaenzeObjektUmInformationenVonSynonymen = require('lists/lib/ergaenzeObjektUmInformationenVonSynonymen'),
-    holeUebergebeneVariablen = require('lists/lib/holeUebergebeneVariablen'),
-    ergaenzeDsBsVonSynonym = require('lists/lib/ergaenzeDsBsVonSynonym'),
-    ergaenzeExportobjekteUmExportobjekt = require('lists/lib/ergaenzeExportobjekteUmExportobjekt'),
-    row,
-    objekt,
-    exportObjekte = [],
-    üVar = {
-      felder: [],
-      bezInZeilen: true
-    },
-    exportObjekt,
-    beziehungssammlungenAusSynonymen,
-    datensammlungenAusSynonymen,
-    ergänzeDsBsVonSynonymReturn
+  var ergaenzeObjektUmInformationenVonSynonymen = require('lists/lib/ergaenzeObjektUmInformationenVonSynonymen')
+  var holeUebergebeneVariablen = require('lists/lib/holeUebergebeneVariablen')
+  var ergaenzeDsBsVonSynonym = require('lists/lib/ergaenzeDsBsVonSynonym')
+  var ergaenzeExportobjekteUmExportobjekt = require('lists/lib/ergaenzeExportobjekteUmExportobjekt')
+  var row
+  var objekt
+  var exportObjekte = []
+  var üVar = {
+    felder: [],
+    bezInZeilen: true
+  }
+  var exportObjekt
+  var beziehungssammlungenAusSynonymen
+  var datensammlungenAusSynonymen
+  var ergänzeDsBsVonSynonymReturn
 
   // übergebene Variablen extrahieren
   üVar = holeUebergebeneVariablen(req.query)

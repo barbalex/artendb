@@ -3,12 +3,12 @@
 var _ = require('lists/lib/underscore')
 
 module.exports = function (exportobjekte) {
-  var stringTitelzeile = '',
-    stringZeilen = '',
-    stringZeile
+  var stringTitelzeile = ''
+  var stringZeilen = ''
+  var stringZeile
 
   if (exportobjekte && exportobjekte.length > 0) {
-    _.each(exportobjekte, function (exportobjekt) {
+    exportobjekte.forEach(function (exportobjekt) {
       // aus unerklärlichem Grund blieb stringTitelzeile leer, wenn nur ein Datensatz gefiltert wurde
       // daher bei jedem Datensatz prüfen, ob eine Titelzeile erstellt wurde und wenn nötig ergänzen
       if (stringTitelzeile === '' || stringTitelzeile === ',') {
@@ -27,7 +27,7 @@ module.exports = function (exportobjekte) {
       }
       stringZeile = ''
       // durch die Felder loopen
-      _.each(exportobjekt, function (feldwert) {
+      exportobjekt.forEach(function (feldwert) {
         if (stringZeile !== '') {
           stringZeile += ','
         }

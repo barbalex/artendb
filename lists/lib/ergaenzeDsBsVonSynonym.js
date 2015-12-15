@@ -1,10 +1,10 @@
 'use strict'
 
 module.exports = function (objekt, datensammlungenAusSynonymen, beziehungssammlungenAusSynonymen) {
-  var dsAusSynNamen = [],
-    bsAusSynNamen = [],
-    dsAusSynName,
-    bsAusSynName
+  var dsAusSynNamen = []
+  var bsAusSynNamen = []
+  var dsAusSynName
+  var bsAusSynName
 
   if (objekt.Eigenschaftensammlungen) {
     if (datensammlungenAusSynonymen) {

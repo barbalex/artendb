@@ -1,11 +1,10 @@
 'use strict'
 
-var _ = require('lists/lib/underscore'),
-  convertToCorrectType = require('lists/lib/convertToCorrectType')
+var convertToCorrectType = require('lists/lib/convertToCorrectType')
 
 module.exports = function (filterkriterien) {
   if (filterkriterien && filterkriterien.length > 0) {
-    _.each(filterkriterien, function (filterkriterium) {
+    filterkriterien.forEach(function (filterkriterium) {
       // die id darf nicht in Kleinschrift verwandelt werden
       if (filterkriterium.Feldname !== 'GUID') {
         // true wurde offenbar irgendwie umgewandelt

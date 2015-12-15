@@ -1,21 +1,21 @@
 'use strict'
 
-var _ = require('lists/lib/underscore'),
-  bereiteFilterkriterienVor = require('lists/lib/bereiteFilterkriterienVor')
+var _ = require('lists/lib/underscore')
+var bereiteFilterkriterienVor = require('lists/lib/bereiteFilterkriterienVor')
 
 // liest übergebene Variabeln für Export aus
 // und bereitet sie für die Verwendung auf
 module.exports = function (query_objekt) {
   var ueVar = {
-      fasseTaxonomienZusammen: false,
-      filterkriterien: [],
-      felder: [],
-      nurObjekteMitEigenschaften: true,
-      bezInZeilen: true,
-      format: 'xlsx'
-    },
-    filterkriterienObjekt,
-    felderObjekt
+    fasseTaxonomienZusammen: false,
+    filterkriterien: [],
+    felder: [],
+    nurObjekteMitEigenschaften: true,
+    bezInZeilen: true,
+    format: 'xlsx'
+  }
+  var filterkriterienObjekt
+  var felderObjekt
 
   _.each(query_objekt, function (value, key) {
     switch (key) {
@@ -39,7 +39,7 @@ module.exports = function (query_objekt) {
         break
       case 'nurObjekteMitEigenschaften':
         // true oder false wird als String übergeben > umwandeln
-        ueVar.nurObjekteMitEigenschaften = (value == 'true')
+        ueVar.nurObjekteMitEigenschaften = (value == 'true') // eslint-disable-line eqeqeq
         break
       case 'bezInZeilen':
         // true oder false wird als String übergeben > umwandeln

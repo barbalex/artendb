@@ -9,17 +9,17 @@ function (head, req) {
     }
   })
 
-  var _ = require ('lists/lib/underscore'),
-    findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc'),
-    row,
-    doc,
-    exportJson = {},
-    art,
-    eigenschaftensammlungZhGis,
-    beziehungssammlungOffizielleArt,
-    beziehungssammlungAkzeptierteReferenz,
-    k,
-    standardtaxonomie
+  var _ = require ('lists/lib/underscore')
+  var findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc')
+  var row
+  var doc
+  var exportJson = {}
+  var art
+  var eigenschaftensammlungZhGis
+  var beziehungssammlungOffizielleArt
+  var beziehungssammlungAkzeptierteReferenz
+  var k
+  var standardtaxonomie
 
   exportJson.docs = []
 

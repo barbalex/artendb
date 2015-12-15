@@ -37,8 +37,8 @@
   },
   "standard": {
     "ignore": [
-      "lists/lib/underscore",
-      "views/lib/underscore",
+      "lists/lib/underscore.js",
+      "views/lib/underscore.js",
       "node_modules"
     ]
   }

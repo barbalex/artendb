@@ -1,8 +1,8 @@
 'use strict'
 
 module.exports = function (feldWert) {
-  var myTypeOf = require('lists/lib/myTypeOf'),
-    type = myTypeOf(feldWert)
+  var myTypeOf = require('lists/lib/myTypeOf')
+  var type = myTypeOf(feldWert)
 
   if (type === 'boolean') { return Boolean(feldWert) }
   if (type === 'float') { return parseFloat(feldWert) }

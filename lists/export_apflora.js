@@ -13,15 +13,15 @@ function (head, req) {
     }
   })
 
-  var _ = require('lists/lib/underscore'),
-    findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc'),
-    row,
-    objekt,
-    exportObjekte = [],
-    exportObjekt,
-    dsTaxonomie,
-    dsArtwert,
-    dsKef
+  var _ = require('lists/lib/underscore')
+  var findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc')
+  var row
+  var objekt
+  var exportObjekte = []
+  var exportObjekt
+  var dsTaxonomie
+  var dsArtwert
+  var dsKef
 
   // list wird mit view flora abgerufen
   while (row = getRow()) {

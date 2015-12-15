@@ -14,16 +14,16 @@ function (head, req) {
     }
   })
 
-  var _ = require('lists/lib/underscore'),
-    codiereFloraStatus = require('lists/lib/codiereFloraStatus'),
-    findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc'),
-    row,
-    Objekt,
-    exportObjekte = [],
-    exportObjekt,
-    dsTaxonomie = {},
-    floraStatusCodiert,
-    standardtaxonomie
+  var _ = require('lists/lib/underscore')
+  var codiereFloraStatus = require('lists/lib/codiereFloraStatus')
+  var findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc')
+  var row
+  var Objekt
+  var exportObjekte = []
+  var exportObjekt
+  var dsTaxonomie = {}
+  var floraStatusCodiert
+  var standardtaxonomie
 
   while (row = getRow()) {
     Objekt = row.doc

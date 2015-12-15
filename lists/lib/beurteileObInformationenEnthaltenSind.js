@@ -6,18 +6,18 @@
 var _ = require('lists/lib/underscore')
 
 module.exports = function (objekt, felder) {
-  var hinzufuegen = false,
-    // es reicht, wenn mindestens ein feld mit Werten enthalten ist!
-    mindestensEinFeldHinzufuegen = false,
-    dsTyp,
-    feldName,
-    bsMitName,
-    bezMitFeldname,
-    dsMitName,
-    dsName
+  var hinzufuegen = false
+  // es reicht, wenn mindestens ein feld mit Werten enthalten ist!
+  var mindestensEinFeldHinzufuegen = false
+  var dsTyp
+  var feldName
+  var bsMitName
+  var bezMitFeldname
+  var dsMitName
+  var dsName
 
   if (felder && felder.length > 0) {
-    _.each(felder, function (feld) {
+    felder.forEach(function (feld) {
       dsTyp = feld.DsTyp
       dsName = feld.DsName
       feldName = feld.Feldname
