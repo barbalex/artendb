@@ -1,3 +1,7 @@
+/**
+ * see: http://docs.couchdb.org/en/1.6.1/couchapp/ddocs.html#vdufun
+ */
+
 function(newDoc, oldDoc, userCtx, secObj) {
 
   var _ = require('lists/lib/underscore')
@@ -5,7 +9,7 @@ function(newDoc, oldDoc, userCtx, secObj) {
   /**
    * make sure user is logged in
    */
-  if (!userCtx.name) throw({forbidden: 'Sie müssen angemeldet sein'})
+  if (!userCtx.name) throw({unauthorized: 'Sie müssen angemeldet sein'})
 
   /**
    * TODO: if user is admin, wave him through without all the computations that follow
@@ -50,8 +54,8 @@ function(newDoc, oldDoc, userCtx, secObj) {
    *   - exists "Organisation mit Schreibrecht"?
    *   - does user have correct role to create it?
    *
-   * - check if doc was deleted (newDoc._deleted). If true:
-   *   - does user have correct role to delete it?
+   * - check if doc was deleted ('if (newDoc._deleted === true)'). If true:
+   *   - does user have correct role to delete it? (= do his roles contain 'orgname org')
    *
    * repeat for pcs, rcs, taxonomies:
    * - build array of collections that were added. Loop them and check:
