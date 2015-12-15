@@ -51,6 +51,9 @@ function(newDoc, oldDoc, userCtx, secObj) {
   var esRemoved = []
   var bsAdded = []
   var bsRemoved = []
+  var taxChanged = []
+  var esChanged = []
+  var bsChanged = []
   var taxNamesInOldDoc
   var esNamesInOldDoc
   var bsNamesInOldDoc
@@ -75,14 +78,14 @@ function(newDoc, oldDoc, userCtx, secObj) {
       if (newDoc.Gruppe && newDoc.Gruppe === 'Lebensräume' && isUserLrWriter(organization)) {
         // this is o.k.
       } else if (!isUserOrgAdmin(organization) && !isUserTaxWriter(organization) && !userIsServerOrDatabaseAdmin) {
-        throw({unauthorized: 'Sie können nur neue Objekte schaffen, wenn eine Organisation Ihnen dieses Recht erteilt hat'})
+        throw({unauthorized: 'Sie können nur neue Objekte schaffen, wenn eine Organisation mit Schreibrechten Ihnen dieses Recht erteilt'})
       }
     }
     // if doc was deleted, user needs to be one of: orgAdmin, dbAdmin or serverAdmin
     if (docWasDeleted) {
       organization = newDoc['Organisation mit Schreibrecht']
       if (!isUserOrgAdmin(organization) && !userIsServerOrDatabaseAdmin) {
-        throw({unauthorized: 'Sie können nur neue Objekte schaffen, wenn eine Organisation Ihnen dieses Recht erteilt hat'})
+        throw({unauthorized: 'Sie können nur neue Objekte schaffen, wenn eine Organisation mit Schreibrechten Ihnen dieses Recht erteilt'})
       }
     }
     // make sure guids are formatted correctly
@@ -157,7 +160,7 @@ function(newDoc, oldDoc, userCtx, secObj) {
           if (!bsInOldDoc) bsAdded.push(bs)
         }
       })
-      // build an array of es / bs that were removed
+      // build an array of tax / es / bs that were removed
       oldDoc.Taxonomien.forEach(function (tax) {
         if (tax.Name) {
           var taxInNewDoc = _.find(taxNamesInNewDoc, function (newDocTaxName) {
@@ -188,9 +191,7 @@ function(newDoc, oldDoc, userCtx, secObj) {
           var taxInOldDoc = _.find(oldDoc.Taxonomien, function (oldDocTax) {
             return oldDocTax.Name && oldDocTax.Name === tax.Name
           })
-          if (taxInOldDoc) {
-
-          }
+          if (taxInOldDoc && !_.isEqual(tax, taxInOldDoc)) taxChanged.push(tax)
         }
       })
       newDoc.Eigenschaftensammlungen.forEach(function (es) {
@@ -198,9 +199,7 @@ function(newDoc, oldDoc, userCtx, secObj) {
           var esInOldDoc = _.find(oldDoc.Eigenschaftensammlungen, function (oldDocEs) {
             return oldDocEs.Name && oldDocEs.Name === es.Name
           })
-          if (esInOldDoc) {
-
-          }
+          if (esInOldDoc && !_.isEqual(es, oldDocEs)) esChanged.push(es)
         }
       })
       newDoc.Beziehungssammlungen.forEach(function (bs) {
@@ -208,9 +207,61 @@ function(newDoc, oldDoc, userCtx, secObj) {
           var bsInOldDoc = _.find(oldDoc.Beziehungssammlungen, function (oldDocBs) {
             return oldDocBs.Name && oldDocBs.Name === bs.Name
           })
-          if (bsInOldDoc) {
-            
-          }
+          if (bsInOldDoc && !_.isEqual(bs, bsInOldDoc)) bsChanged.push(bs)
+        }
+      })
+      // analyse taxAdded
+      taxAdded.forEach(function (tax) {
+        // ensure field "Organisation mit Schreibrecht"
+        if (!tax['Organisation mit Schreibrecht']) {
+          throw({forbidden: 'Taxonomien müssen das Feld "Organisation mit Schreibrecht" enthalten'})
+        }
+        organization = tax['Organisation mit Schreibrecht']
+        if (!isUserTaxWriter(organization) && !isUserOrgAdmin && !userIsServerOrDatabaseAdmin) {
+          throw({unauthorized: 'Sie können nur neue Taxonomien schaffen, wenn eine Organisation mit Schreibrechten Ihnen dieses Recht erteilt'})
+        }
+      })
+      // analyse taxRemoved
+      taxRemoved.forEach(function (tax) {
+        organization = tax['Organisation mit Schreibrecht']
+        if (!isUserTaxWriter(organization) && !isUserOrgAdmin && !userIsServerOrDatabaseAdmin) {
+          throw({unauthorized: 'Sie können Taxonomien nur löschen, wenn die Organisation mit Schreibrechten Ihnen dieses Recht erteilt'})
+        }
+      })
+      // analyse esAdded
+      esAdded.forEach(function (es) {
+        // ensure field "Organisation mit Schreibrecht"
+        if (!es['Organisation mit Schreibrecht']) {
+          throw({forbidden: 'Eigenschaftensammlungen müssen das Feld "Organisation mit Schreibrecht" enthalten'})
+        }
+        organization = es['Organisation mit Schreibrecht']
+        if (!isUserEsWriter(organization) && !isUserOrgAdmin && !userIsServerOrDatabaseAdmin) {
+          throw({unauthorized: 'Sie können nur neue Eigenschaftensammlungen schaffen, wenn eine Organisation mit Schreibrechten Ihnen dieses Recht erteilt'})
+        }
+      })
+      // analyse esRemoved
+      esRemoved.forEach(function (es) {
+        organization = es['Organisation mit Schreibrecht']
+        if (!isUserEsWriter(organization) && !isUserOrgAdmin && !userIsServerOrDatabaseAdmin) {
+          throw({unauthorized: 'Sie können Eigenschaftensammlungen nur löschen, wenn die Organisation mit Schreibrechten Ihnen dieses Recht erteilt'})
+        }
+      })
+      // analyse bsAdded
+      bsAdded.forEach(function (bs) {
+        // ensure field "Organisation mit Schreibrecht"
+        if (!bs['Organisation mit Schreibrecht']) {
+          throw({forbidden: 'Beziehungssammlungen müssen das Feld "Organisation mit Schreibrecht" enthalten'})
+        }
+        organization = bs['Organisation mit Schreibrecht']
+        if (!isUserEsWriter(organization) && !isUserOrgAdmin && !userIsServerOrDatabaseAdmin) {
+          throw({unauthorized: 'Sie können nur neue Beziehungssammlungen schaffen, wenn eine Organisation mit Schreibrechten Ihnen dieses Recht erteilt'})
+        }
+      })
+      // analyse bsRemoved
+      bsRemoved.forEach(function (bs) {
+        organization = bs['Organisation mit Schreibrecht']
+        if (!isUserEsWriter(organization) && !isUserOrgAdmin && !userIsServerOrDatabaseAdmin) {
+          throw({unauthorized: 'Sie können Beziehungssammlungen nur löschen, wenn die Organisation mit Schreibrechten Ihnen dieses Recht erteilt'})
         }
       })
     }
@@ -220,25 +271,4 @@ function(newDoc, oldDoc, userCtx, secObj) {
         throw({unauthorized: 'Nur Datenbank- oder Server-Admins dürfen Dokumente verändern, die nicht Objekte sind'})
       }
   }
-
-  /**
-   * if doc, Eigenschaftensammlungen, Beziehungssammlungen or Taxonomien were changed
-   * user needs the correct role
-   *
-   * This is the plan:
-   *
-   * repeat for pcs, rcs, taxonomies:
-   * - build array of collections that were added. Loop them and check:
-   *   - exists "Organisation mit Schreibrecht"?
-   *   - does user have correct role to add it?
-   * 
-   * - build array of collections that were removed. Loop them and check:
-   *   - does user have correct role to remove it?
-   * 
-   * - build array of all other collections. Loop them and check:
-   *   - was the collection changed (https://lodash.com/docs#isEqual)? If true:
-   *     - exists "Organisation mit Schreibrecht"?
-   *     - does user have correct role to change it?
-   *
-   */
 }
