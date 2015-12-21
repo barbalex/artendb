@@ -6,7 +6,8 @@
   "scripts": {
     "build": "gulp buildCouchapp",
     "test": "standard",
-    "start": "node server.js"
+    "start": "node server.js",
+    "deploy": "gulp sftp_src && gulp sftp_top"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
   "homepage": "https://github.com/barbalex/ae_api",
   "dependencies": {
     "gulp": "3.9.0",
+    "gulp-sftp": "^0.1.5",
     "gulp-shell": "0.5.1",
     "hapi": "11.1.2",
     "lodash": "3.10.1",
