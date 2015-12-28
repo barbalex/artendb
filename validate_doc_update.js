@@ -8,7 +8,6 @@ function (newDoc, oldDoc, userCtx, secObj) {
   var docIsNew = !oldDoc
   var docWasDeleted = newDoc._deleted === true
   var existingDocWasChanged = !!oldDoc
-  var dbRoles = secObj.admins.roles
   var isUserServerOrDatabaseAdmin = function () {
     // see if the user is a server admin
     if (_.contains(userCtx.roles, '_admin')) return true // server admin
@@ -19,7 +18,7 @@ function (newDoc, oldDoc, userCtx, secObj) {
     // see if the user a database admin specified by role
     if (secObj && secObj.admins && secObj.admins.roles) {
       userCtx.roles.forEach(function (userRole) {
-        if (_.contains(dbRoles, userRole)) return true // user is db admin
+        if (_.contains(secObj.admins.roles, userRole)) return true // user is db admin
       })
     }
     return false // default to no admin
