@@ -7,7 +7,7 @@
     "build": "gulp buildCouchapp",
     "test": "standard",
     "start": "node server.js",
-    "deploy": "gulp sftp_src && gulp sftp_top"
+    "yolo": "gulp sftp_src && gulp sftp_top"
   },
   "repository": {
     "type": "git",
