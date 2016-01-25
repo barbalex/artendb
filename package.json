@@ -30,7 +30,7 @@
   "dependencies": {
     "gulp": "3.9.0",
     "gulp-sftp": "0.1.5",
-    "gulp-shell": "0.5.1",
+    "gulp-shell": "0.5.2",
     "hapi": "12.1.0",
     "lodash": "4.0.0",
     "pouchdb": "5.2.0",
