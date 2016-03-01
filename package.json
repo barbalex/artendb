@@ -28,14 +28,14 @@
   },
   "homepage": "https://github.com/barbalex/ae_api",
   "dependencies": {
-    "gulp": "3.9.0",
+    "gulp": "3.9.1",
     "gulp-sftp": "0.1.5",
     "gulp-shell": "0.5.2",
-    "hapi": "12.1.0",
-    "lodash": "4.0.0",
-    "pouchdb": "5.2.0",
+    "hapi": "13.0.0",
+    "lodash": "4.5.1",
+    "pouchdb": "5.2.1",
     "require-dir": "0.3.0",
-    "standard": "5.4.1"
+    "standard": "6.0.7"
   },
   "standard": {
     "ignore": [
