@@ -18,36 +18,19 @@ const serverOptionsDevelopment = {
 }
 
 const Hapi = require('hapi')
-const doesUserExist = require('./src/doesUserExist.js')
-const getUserRoles = require('./src/getUserRoles.js')
 const addUserRoles = require('./src/addUserRoles.js')
 const removeUserRoles = require('./src/removeUserRoles.js')
 const server = new Hapi.Server(serverOptionsDevelopment)
 
-server.connection({
-  host: '0.0.0.0',
-  port: 8000,
-  routes: {
-    cors: true
-  }
-})
+server.connection(require('./serverConnection.js'))
 
 server.start((error) => {
   if (error) throw error
   console.log('Server running at:', server.info.uri)
 })
 
-server.route({
-  method: 'GET',
-  path: '/doesuserexist/{username}',
-  handler: doesUserExist
-})
-
-server.route({
-  method: 'GET',
-  path: '/userroles/{username}',
-  handler: getUserRoles
-})
+server.route(require('./routes/doesuserexistGet.js'))
+server.route(require('./routes/userrolesGet.js'))
 
 server.route({
   method: 'POST',
