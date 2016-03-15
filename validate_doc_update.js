@@ -119,7 +119,7 @@ function (newDoc, oldDoc, userCtx, secObj) {
      * make sure objects of gruppe Fauna and Flora have GIS-Layer and Betrachtungsdistanz
      * they need it to be analysed in ALT
      */
-    if (newDoc.Gruppe && (newDoc.Gruppe === 'Fauna' || newDoc.Gruppe === 'Flora')) {
+    if (newDoc.Typ && newDoc.Typ === 'Objekt' && newDoc.Gruppe && (newDoc.Gruppe === 'Fauna' || newDoc.Gruppe === 'Flora')) {
       // these docs are analysed in ALT
       var esZhGis = _.find(newDoc.Eigenschaftensammlungen, function (es) {
         return es.Name === 'ZH GIS'
