@@ -1,3 +1,4 @@
+/* eslint ecmaVersion: 5 */
 // fügt die für ALT obligatorischen Felder ein
 // und entfernt diese aus dem übergebenen exportObjekt, falls sie schon darin enthalten waren
 // erhält das Objekt und das exportObjekt
@@ -5,14 +6,18 @@
 
 'use strict'
 
-var _ = require('lists/lib/underscore')
+var _ = require('lists/lib/lodash')
 var findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc')
 
-function isInt (value) {
-  return !isNaN(value) && parseInt(Number(value), 10) == value && !isNaN(parseInt(value, 10))  // eslint-disable-line eqeqeq
+function isInt(value) {
+  return (
+    !isNaN(value) &&
+    parseInt(Number(value), 10) == value &&  // eslint-disable-line eqeqeq
+    !isNaN(parseInt(value, 10))
+  )
 }
 
-module.exports = function (objekt, exportObjekt) {
+module.exports = function(objekt, exportObjekt) {
   var dsZhArtwert
   var dsZhGis
   var standardtaxonomie = findStandardTaxonomyInDoc(objekt)
@@ -27,53 +32,82 @@ module.exports = function (objekt, exportObjekt) {
   var isGuidFormatCorrect = new RegExp('^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$').test(objekt._id)
   if (!isGuidFormatCorrect) return {}
   // sicherstellen, dass Taxonomie ID ein integer ist
-  if (!isInt(standardtaxonomie.Eigenschaften['Taxonomie ID'])) return {}
+  var taxonomieId = _.get(standardtaxonomie, ['Eigenschaften', 'Taxonomie ID'])
+  if (
+    !taxonomieId ||
+    !isInt(taxonomieId)
+  ) {
+    return {}
+  }
 
   // Felder ergänzen
   // immer sicherstellen, dass das Feld existiert
   exportObjekt.idArt = '{' + objekt._id + '}'
-  exportObjekt.ref = standardtaxonomie.Eigenschaften['Taxonomie ID']
+  exportObjekt.ref = taxonomieId
 
-  dsZhGis = _.find(objekt.Eigenschaftensammlungen, function (ds) {
-    return ds.Name === 'ZH GIS'
-  }) || {}
+  if (objekt.Eigenschaftensammlungen === undefined) {
+    dsZhGis = {}
+  } else {
+    dsZhGis = _.find(objekt.Eigenschaftensammlungen, function(ds) {
+      return ds.Name === 'ZH GIS'
+    }) || {}
+  }
 
-  if (dsZhGis && dsZhGis.Eigenschaften && dsZhGis.Eigenschaften['GIS-Layer']) {
-    exportObjekt.gisLayer = dsZhGis.Eigenschaften['GIS-Layer'].substring(0, 50)
+  var gisLayer = _.get(dsZhGis, ['Eigenschaften', 'GIS-Layer'])
+  if (gisLayer) {
+    exportObjekt.gisLayer = gisLayer.substring(0, 50)
   } else {
     // sollte nicht vorkommen, da der view nur objekte mit werten wählt
     exportObjekt.gisLayer = ''
   }
 
-  if (dsZhGis && dsZhGis.Eigenschaften && dsZhGis.Eigenschaften['Betrachtungsdistanz (m)'] && isInt(dsZhGis.Eigenschaften['Betrachtungsdistanz (m)'])) {
-    exportObjekt.distance = dsZhGis.Eigenschaften['Betrachtungsdistanz (m)']
+  var betrachtungsdistanz = _.get(dsZhGis, ['Eigenschaften', 'Betrachtungsdistanz (m)'])
+  if (
+    betrachtungsdistanz &&
+    isInt(betrachtungsdistanz)
+  ) {
+    exportObjekt.distance = betrachtungsdistanz
   } else {
     // sollte nicht vorkommen, da der view nur objekte mit werten wählt
     exportObjekt.distance = 500
   }
 
-  var artname = standardtaxonomie.Eigenschaften.Artname
-  if (artname && artname !== '(kein Artname)') {
-    exportObjekt.nameLat = standardtaxonomie.Eigenschaften.Artname.substring(0, 255)
-  } else if (standardtaxonomie.Eigenschaften.Gattung) {
-    var art = standardtaxonomie.Eigenschaften.Gattung + ' ' + standardtaxonomie.Eigenschaften.Art
+  var artname = _.get(standardtaxonomie, ['Eigenschaften', 'Artname'])
+  var gattung = _.get(standardtaxonomie, ['Eigenschaften', 'Gattung'])
+  var art = _.get(standardtaxonomie, ['Eigenschaften', 'Art'])
+  if (
+    artname &&
+    artname !== '(kein Artname)'
+  ) {
+    exportObjekt.nameLat = artname.substring(0, 255)
+  } else if (gattung) {
+    var art = gattung + ' ' + art
     exportObjekt.nameLat = art.substring(0, 255)
   } else {
     exportObjekt.nameLat = '(kein Artname)'
   }
 
-  if (standardtaxonomie.Eigenschaften['Name Deutsch']) {
-    exportObjekt.nameDeu = standardtaxonomie.Eigenschaften['Name Deutsch'].substring(0, 255)
+  var nameDeutsch = _.get(standardtaxonomie, ['Eigenschaften', 'Name Deutsch'])
+  if (nameDeutsch) {
+    exportObjekt.nameDeu = nameDeutsch.substring(0, 255)
   } else {
     exportObjekt.nameDeu = ''
   }
 
-  dsZhArtwert = _.find(objekt.Eigenschaftensammlungen, function (ds) {
-    return ds.Name === 'ZH Artwert (aktuell)'
-  }) || {}
+  if (objekt.Eigenschaftensammlungen === undefined) {
+    dsZhArtwert = {}
+  } else {
+    dsZhArtwert = _.find(objekt.Eigenschaftensammlungen, function(ds) {
+      return ds.Name === 'ZH Artwert (aktuell)'
+    }) || {}
+  }
 
-  if (dsZhArtwert && dsZhArtwert.Eigenschaften && (dsZhArtwert.Eigenschaften.Artwert || dsZhArtwert.Eigenschaften.Artwert === 0) && isInt(dsZhArtwert.Eigenschaften.Artwert)) {
-    exportObjekt.artwert = dsZhArtwert.Eigenschaften.Artwert
+  var artwert = _.get(dsZhArtwert, ['Eigenschaften', 'Artwert'])
+  if (
+    (artwert && isInt(artwert)) ||
+    artwert === 0
+  ) {
+    exportObjekt.artwert = artwert
   } else {
     exportObjekt.artwert = 0
   }

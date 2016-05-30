@@ -1,11 +1,12 @@
+/* eslint ecmaVersion: 5 */
 'use strict'
 
-var _ = require('lists/lib/underscore')
+var _ = require('lists/lib/lodash')
 var bereiteFilterkriterienVor = require('lists/lib/bereiteFilterkriterienVor')
 
 // liest übergebene Variabeln für Export aus
 // und bereitet sie für die Verwendung auf
-module.exports = function (query_objekt) {
+module.exports = function(query_objekt) {
   var ueVar = {
     fasseTaxonomienZusammen: false,
     filterkriterien: [],
@@ -17,7 +18,7 @@ module.exports = function (query_objekt) {
   var filterkriterienObjekt
   var felderObjekt
 
-  _.each(query_objekt, function (value, key) {
+  _.each(query_objekt, function(value, key) {
     switch (key) {
       case 'fasseTaxonomienZusammen':
         // true oder false wird als String übergeben > umwandeln
