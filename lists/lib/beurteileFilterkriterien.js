@@ -1,3 +1,4 @@
+/* eslint ecmaVersion:5 */
 // beurteilt, ob ein Objekt exportiert werden soll
 // indem er Feldwerte mit Filterkriterien vergleicht
 // das Filterkriterium besteht aus einem Vergleichsoperator (oder auch nicht) und einem Filterwert
@@ -6,7 +7,7 @@
 
 var myTypeOf = require('lists/lib/myTypeOf')
 
-module.exports = function (feldwert, filterwert, vergleichsoperator) {
+module.exports = function(feldwert, filterwert, vergleichsoperator) {
   if (vergleichsoperator === 'kein' && feldwert == filterwert) { return true } // eslint-disable-line eqeqeq
   if (vergleichsoperator === 'kein' && myTypeOf(feldwert) === 'string' && feldwert.indexOf(filterwert) >= 0) { return true }
   if (vergleichsoperator === '=' && feldwert == filterwert) { return true } // eslint-disable-line eqeqeq
