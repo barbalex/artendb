@@ -40,12 +40,5 @@
     "lodash": "4.13.1",
     "pouchdb": "5.3.2",
     "require-dir": "0.3.0"
-  },
-  "standard": {
-    "ignore": [
-      "lists/lib/underscore.js",
-      "views/lib/underscore.js",
-      "node_modules"
-    ]
   }
 }
