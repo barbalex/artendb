@@ -19,10 +19,12 @@ module.exports = (request, callback) => {
       return usersDb.get(userId)
     })
     // return true if doc exists, otherwise false
-    .then((result) => callback(null, true))
+    .then(() => callback(null, true))
     // inform caller of error
     .catch((error) => {
-      if (error.status === 404) return callback(null, false)
+      if (error.status === 404) {
+        return callback(null, false)
+      }
       callback(error.message, false)
     })
 }
