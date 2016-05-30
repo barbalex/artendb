@@ -21,6 +21,8 @@ function(head, req) {
   var beziehungssammlungAkzeptierteReferenz
   var k
   var standardtaxonomie
+  var floraSynonymName
+  var mooseSynonymName
 
   exportJson.docs = []
 
@@ -50,14 +52,9 @@ function(head, req) {
         return beziehungssammlung.Name === 'SISF Index 2 (2005): offizielle Art'
       })
       if (beziehungssammlungOffizielleArt) {
-        if (
-          beziehungssammlungOffizielleArt.Beziehungen &&
-          beziehungssammlungOffizielleArt.Beziehungen[0] &&
-          beziehungssammlungOffizielleArt.Beziehungen[0].Beziehungspartner &&
-          beziehungssammlungOffizielleArt.Beziehungen[0].Beziehungspartner[0] &&
-          beziehungssammlungOffizielleArt.Beziehungen[0].Beziehungspartner[0].Name
-        ) {
-          art.HinweisVerwandschaft = 'Achtung: Synonym von ' + beziehungssammlungOffizielleArt.Beziehungen[0].Beziehungspartner[0].Name
+        floraSynonymName = _.get(beziehungssammlungOffizielleArt, 'Beziehungen[0].Beziehungspartner[0].Name')
+        if (floraSynonymName) {
+          art.HinweisVerwandschaft = 'Achtung: Synonym von ' + floraSynonymName
         }
       }
     }
@@ -66,8 +63,9 @@ function(head, req) {
         return beziehungssammlung.Name === 'NISM (2010): akzeptierte Referenz'
       })
       if (beziehungssammlungAkzeptierteReferenz) {
-        if (beziehungssammlungAkzeptierteReferenz.Beziehungen && beziehungssammlungAkzeptierteReferenz.Beziehungen[0] && beziehungssammlungAkzeptierteReferenz.Beziehungen[0].Beziehungspartner && beziehungssammlungAkzeptierteReferenz.Beziehungen[0].Beziehungspartner[0] && beziehungssammlungAkzeptierteReferenz.Beziehungen[0].Beziehungspartner[0].Name) {
-          art.HinweisVerwandschaft = 'Achtung: Synonym von ' + beziehungssammlungAkzeptierteReferenz.Beziehungen[0].Beziehungspartner[0].Name
+        mooseSynonymName = _.get(beziehungssammlungAkzeptierteReferenz, 'Beziehungen[0].Beziehungspartner[0].Name')
+        if (mooseSynonymName) {
+          art.HinweisVerwandschaft = 'Achtung: Synonym von ' + mooseSynonymName
         }
       }
     }

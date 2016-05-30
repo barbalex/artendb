@@ -2,7 +2,7 @@
 
 const gulp = require('gulp')
 const shell = require('gulp-shell')
-const passFile = require('../couchpass.json')
+const passFile = require('../couchPass.json')
 
 const userName = passFile.user
 const password = passFile.pass
