@@ -1,9 +1,10 @@
+/* eslint ecmaVersion: 5 */
 'use strict'
 
 // bekommt einen der existierenden Werte für Status bei Flora
 // retourniert den einstelligen Code
 // wird benötigt von EvAB
-module.exports = function (status) {
+module.exports = function(status) {
   var codierteWerte = {
     'eigenständige Art aber im Index nicht enthalten': '?',
     'akzeptierter Name': 'A',

@@ -1,7 +1,9 @@
+/* eslint ecmaVersion: 5 */
 'use strict'
 
-module.exports = function (feldWert) {
-  var myTypeOf = require('lists/lib/myTypeOf')
+var myTypeOf = require('lists/lib/myTypeOf')
+
+module.exports = function(feldWert) {
   var type = myTypeOf(feldWert)
 
   if (type === 'boolean') { return Boolean(feldWert) }
