@@ -29,7 +29,10 @@ function(head, req) {
     doc = row.doc;
     artgruppe = {};
     artgruppe.Typ = 'ArtGruppe';
-    artgruppe.ArtGruppe = row.key.replace('ue', 'ü').replace('ae', 'ä').replace('oe', 'ö');
+    artgruppe.ArtGruppe = row.key
+      .replace(/ue/g, 'ü')
+      .replace(/ae/g, 'ä')
+      .replace(/oe/g, 'ö');
     // id zusammensetzen aus der GUID der idVorlage und dem Namen der artgruppe
     artgruppe._id = idVorlage.substring(0, idVorlage.length - artgruppe.ArtGruppe.length) + artgruppe.ArtGruppe;
     artgruppe.AnzArten = row.value;
