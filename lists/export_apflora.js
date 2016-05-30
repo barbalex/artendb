@@ -1,9 +1,10 @@
+/* eslint ecmaVersion: 5 */
 /**
  * Benutzt view flora
  * produziert die API für apflora Artenliste
  */
 
-function (head, req) {
+function(head, req) {
   'use strict'
 
   start({
@@ -13,15 +14,22 @@ function (head, req) {
     }
   })
 
-  var _ = require('lists/lib/underscore')
+  var _ = require('lists/lib/lodash')
   var findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc')
   var row
   var objekt
   var exportObjekte = []
   var exportObjekt
-  var dsTaxonomie
   var dsArtwert
   var dsKef
+  var taxonomieId
+  var familie
+  var artnameVollständig
+  var nameDeutsch
+  var status
+  var artwert
+  var artIstKefIndikator
+  var erstesKontrolljahr
 
   // list wird mit view flora abgerufen
   while (row = getRow()) {
@@ -46,36 +54,59 @@ function (head, req) {
     // Felder aktualisieren, wo Daten vorhanden
     if (objekt.Taxonomien) {
       const standardtaxonomie = findStandardTaxonomyInDoc(objekt)
-      if (standardtaxonomie && standardtaxonomie.Eigenschaften) {
-        dsTaxonomie = standardtaxonomie.Eigenschaften
-        exportObjekt.TaxonomieId = dsTaxonomie['Taxonomie ID']
-        if (dsTaxonomie.Familie) exportObjekt.Familie = dsTaxonomie.Familie
-        if (dsTaxonomie['Artname vollständig']) exportObjekt.Artname = dsTaxonomie['Artname vollständig']
+      if (standardtaxonomie) {
+
+        taxonomieId = _.get(standardtaxonomie, ['Eigenschaften', 'Taxonomie ID'])
+        exportObjekt.TaxonomieId = taxonomieId
+
+        familie = _.get(standardtaxonomie, ['Eigenschaften', 'Familie'])
+        if (familie) {
+          exportObjekt.Familie = familie
+        }
+
+        artnameVollständig = _.get(standardtaxonomie, ['Eigenschaften', 'Artname vollständig'])
+        if (artnameVollständig) {
+          exportObjekt.Artname = artnameVollständig
+        }
+
         // wird beim Export nach EvAB benutzt
-        if (dsTaxonomie['Name Deutsch']) exportObjekt.NameDeutsch = dsTaxonomie['Name Deutsch']
-        if (dsTaxonomie.Status) exportObjekt.Status = dsTaxonomie.Status
+        nameDeutsch = _.get(standardtaxonomie, ['Eigenschaften', 'Name Deutsch'])
+        if (nameDeutsch) {
+          exportObjekt.NameDeutsch = nameDeutsch
+        }
+
+        status = _.get(standardtaxonomie, ['Eigenschaften', 'Status'])
+        if (status) {
+          exportObjekt.Status = status
+        }
       }
     }
 
     if (objekt.Eigenschaftensammlungen) {
 
-      dsArtwert = _.find(objekt.Eigenschaftensammlungen, function (ds) {
+      dsArtwert = _.find(objekt.Eigenschaftensammlungen, function(ds) {
         return ds.Name === 'ZH Artwert (aktuell)'
       })
-      if (dsArtwert && dsArtwert.Eigenschaften && dsArtwert.Eigenschaften.Artwert) {
-        exportObjekt.Artwert = dsArtwert.Eigenschaften.Artwert
+      if (dsArtwert) {
+        artwert = _.get(dsArtwert, ['Eigenschaften', 'Artwert'])
+        if (artwert || artwert === 0) {
+          exportObjekt.Artwert = artwert
+        }
       }
 
-      dsKef = _.find(objekt.Eigenschaftensammlungen, function (ds) {
+      dsKef = _.find(objekt.Eigenschaftensammlungen, function(ds) {
         return ds.Name === 'ZH KEF'
       })
-      if (dsKef && dsKef.Eigenschaften && dsKef.Eigenschaften['Art ist KEF-Kontrollindikator']) {
-        // MySQL erwartet für true eine -1
-        exportObjekt.KefArt = -1
-      }
-      if (dsKef && dsKef.Eigenschaften && dsKef.Eigenschaften['Erstes Kontrolljahr']) {
-        // MySQL erwartet für true eine 1
-        exportObjekt.KefKontrolljahr = dsKef.Eigenschaften['Erstes Kontrolljahr']
+      if (dsKef) {
+        artIstKefIndikator = _.get(dsKef, ['Eigenschaften', 'Art ist KEF-Kontrollindikator'])
+        if (artIstKefIndikator) {
+          // MySQL erwartet für true eine -1
+          exportObjekt.KefArt = -1
+        }
+        erstesKontrolljahr = _.get(dsKef, ['Eigenschaften', 'Erstes Kontrolljahr'])
+        if (erstesKontrolljahr) {
+          exportObjekt.KefKontrolljahr = erstesKontrolljahr
+        }
       }
     }
     
