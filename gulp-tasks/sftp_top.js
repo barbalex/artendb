@@ -8,8 +8,8 @@ const gulp = require('gulp')
 const sftp = require('gulp-sftp')
 const sftpPass = require('../sftpPass.json')
 
-gulp.task('sftp_top', () => {
-  return gulp.src(['server.js', 'couchPass.json', 'package.json'])
+gulp.task('sftp_top', () =>
+  gulp.src(['server.js', 'couchPass.json', 'package.json'])
     .pipe(sftp({
       host: '46.101.210.208',
       port: 30000,
@@ -17,4 +17,4 @@ gulp.task('sftp_top', () => {
       user: sftpPass.user,
       pass: sftpPass.pass
     }))
-})
+)
