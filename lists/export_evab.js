@@ -1,9 +1,10 @@
+/* eslint ecmaVersion: 5 */
 /**
  * Benutzt view evab_arten
  * produziert die API für ALT gemäss Vorgaben der EBP
  */
 
-function (head, req) {
+function(head, req) {
   'use strict'
   
   start({
@@ -14,16 +15,24 @@ function (head, req) {
     }
   })
 
-  var _ = require('lists/lib/underscore')
+  var _ = require('lists/lib/lodash')
   var codiereFloraStatus = require('lists/lib/codiereFloraStatus')
   var findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc')
   var row
   var Objekt
   var exportObjekte = []
   var exportObjekt
-  var dsTaxonomie = {}
   var floraStatusCodiert
   var standardtaxonomie
+  var taxonomieId
+  var artname
+  var gattung
+  var art
+  var gattungArt
+  var nameDeutsch
+  var dsZhGis
+  var gisLayer
+  var status
 
   while (row = getRow()) {
     Objekt = row.doc
@@ -32,27 +41,33 @@ function (head, req) {
     // exportobjekt gründen bzw. zurücksetzen
     exportObjekt = {}
 
-    // dsTaxonomie bereitstellen
-    if (standardtaxonomie && standardtaxonomie.Eigenschaften) {
-      dsTaxonomie = standardtaxonomie.Eigenschaften
-    }
-
     // bei allen Gruppen gleiche Eigenschaften setzen
     exportObjekt.idArt = '{' + Objekt._id + '}'
-    if (dsTaxonomie['Taxonomie ID']) {
-      exportObjekt.nummer = dsTaxonomie['Taxonomie ID']
+
+    taxonomieId = _.get(standardtaxonomie, ['Eigenschaften', 'Taxonomie ID'])
+    if (taxonomieId) {
+      exportObjekt.nummer = taxonomieId
     }
 
-    if (dsTaxonomie.Artname) {
-      exportObjekt.wissenschArtname = dsTaxonomie.Artname.substring(0, 255)    // klasse darf max. 255 Zeichen lang sein
-    } else {
+    artname = _.get(standardtaxonomie, ['Eigenschaften', 'Artname'])
+    gattung = _.get(standardtaxonomie, ['Eigenschaften', 'Gattung'])
+    art = _.get(standardtaxonomie, ['Eigenschaften', 'Art'])
+    if (artname) {
+      // darf max. 255 Zeichen lang sein
+      exportObjekt.wissenschArtname = artname.substring(0, 255)
+    } else if (gattung || art) {
       // Feld Artname ist nicht obligatorisch
-      var art = dsTaxonomie.Gattung + ' ' + dsTaxonomie.Art
-      exportObjekt.wissenschArtname = art.substring(0, 255)
+      gattungArt = gattung ? gattung + ' ' + art : art
+      exportObjekt.wissenschArtname = gattungArt.substring(0, 255)
+    } else {
+      exportObjekt.wissenschArtname = '(kein Artname)'
     }
+
+    nameDeutsch = _.get(standardtaxonomie, ['Eigenschaften', 'Name Deutsch'])
     // Name Deutsch existiert bei Moosen nicht, das macht aber nichts
-    if (dsTaxonomie['Name Deutsch']) {
-      exportObjekt.deutscherArtname = dsTaxonomie['Name Deutsch'].substring(0, 255)    // klasse darf max. 255 Zeichen lang sein
+    if (nameDeutsch) {
+      // darf max. 255 Zeichen lang sein
+      exportObjekt.deutscherArtname = nameDeutsch.substring(0, 255)
     }
 
     // gruppen-abhängige Eigenschaften setzen
@@ -63,21 +78,25 @@ function (head, req) {
       exportObjekt.status = 'A'
 
       // Datensammlung 'ZH GIS' holen
-      var dsZhGis = _.find(Objekt.Eigenschaftensammlungen, function (ds) {
+      dsZhGis = _.find(Objekt.Eigenschaftensammlungen, function(ds) {
         return ds.Name === 'ZH GIS'
       }) || {}
-      
-      if (dsZhGis && dsZhGis.Eigenschaften && dsZhGis.Eigenschaften['GIS-Layer']) {
-        exportObjekt.klasse = dsZhGis.Eigenschaften['GIS-Layer'].substring(0, 50)    // klasse darf max. 50 Zeichen lang sein
+      gisLayer = _.get(dsZhGis, ['Eigenschaften', 'GIS-Layer'])
+      if (gisLayer) {
+        // klasse darf max. 50 Zeichen lang sein
+        exportObjekt.klasse = gisLayer.substring(0, 50)
       }
       break
 
     case 'Flora':
       // Felder aktualisieren, wo Daten vorhanden
-      if (dsTaxonomie.Status) {
+      status = _.get(standardtaxonomie, ['Eigenschaften', 'Status'])
+      if (status) {
         // Status codieren
-        floraStatusCodiert = codiereFloraStatus(dsTaxonomie.Status)
-        if (floraStatusCodiert) { exportObjekt.status = floraStatusCodiert }
+        floraStatusCodiert = codiereFloraStatus(status)
+        if (floraStatusCodiert) {
+          exportObjekt.status = floraStatusCodiert
+        }
       }
       // GIS-Layer ist bei Flora immer Flora
       exportObjekt.klasse = 'Flora'

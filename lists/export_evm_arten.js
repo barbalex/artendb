@@ -1,4 +1,5 @@
-function (head, req) {
+/* eslint ecmaVersion: 5 */
+function(head, req) {
   'use strict'
 
   start({
@@ -9,7 +10,7 @@ function (head, req) {
     }
   })
 
-  var _ = require ('lists/lib/underscore')
+  var _ = require ('lists/lib/lodash')
   var findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc')
   var row
   var doc
@@ -30,11 +31,14 @@ function (head, req) {
     art.Typ = 'Arteigenschaft'
     standardtaxonomie = findStandardTaxonomyInDoc(doc)
 
-    eigenschaftensammlungZhGis = _.find(doc.Eigenschaftensammlungen, function (eigenschaftensammlung) {
+    eigenschaftensammlungZhGis = _.find(doc.Eigenschaftensammlungen, function(eigenschaftensammlung) {
       return eigenschaftensammlung.Name === 'ZH GIS'
     })
     if (eigenschaftensammlungZhGis) {
-      art.ArtGruppe = eigenschaftensammlungZhGis.Eigenschaften['GIS-Layer'].replace('ae', 'ä').replace('oe', 'ö').replace('ue', 'ü')
+      art.ArtGruppe = eigenschaftensammlungZhGis.Eigenschaften['GIS-Layer']
+        .replace(/ae/g, 'ä')
+        .replace(/oe/g, 'ö')
+        .replace(/ue/g, 'ü')
     }
 
     art['Taxonomie ID'] = standardtaxonomie.Eigenschaften['Taxonomie ID']
@@ -42,17 +46,23 @@ function (head, req) {
 
     // Hinweis Verwandschaft
     if (doc.Gruppe === 'Flora' && doc.Beziehungssammlungen) {
-      beziehungssammlungOffizielleArt = _.find(doc.Beziehungssammlungen, function (beziehungssammlung) {
+      beziehungssammlungOffizielleArt = _.find(doc.Beziehungssammlungen, function(beziehungssammlung) {
         return beziehungssammlung.Name === 'SISF Index 2 (2005): offizielle Art'
       })
       if (beziehungssammlungOffizielleArt) {
-        if (beziehungssammlungOffizielleArt.Beziehungen && beziehungssammlungOffizielleArt.Beziehungen[0] && beziehungssammlungOffizielleArt.Beziehungen[0].Beziehungspartner && beziehungssammlungOffizielleArt.Beziehungen[0].Beziehungspartner[0] && beziehungssammlungOffizielleArt.Beziehungen[0].Beziehungspartner[0].Name) {
+        if (
+          beziehungssammlungOffizielleArt.Beziehungen &&
+          beziehungssammlungOffizielleArt.Beziehungen[0] &&
+          beziehungssammlungOffizielleArt.Beziehungen[0].Beziehungspartner &&
+          beziehungssammlungOffizielleArt.Beziehungen[0].Beziehungspartner[0] &&
+          beziehungssammlungOffizielleArt.Beziehungen[0].Beziehungspartner[0].Name
+        ) {
           art.HinweisVerwandschaft = 'Achtung: Synonym von ' + beziehungssammlungOffizielleArt.Beziehungen[0].Beziehungspartner[0].Name
         }
       }
     }
     if (doc.Gruppe === 'Moose') {
-      beziehungssammlungAkzeptierteReferenz = _.find(doc.Beziehungssammlungen, function (beziehungssammlung) {
+      beziehungssammlungAkzeptierteReferenz = _.find(doc.Beziehungssammlungen, function(beziehungssammlung) {
         return beziehungssammlung.Name === 'NISM (2010): akzeptierte Referenz'
       })
       if (beziehungssammlungAkzeptierteReferenz) {
