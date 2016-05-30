@@ -1,15 +1,23 @@
+/* eslint ecmaVersion: 5 */
 'use strict'
 
 var beurteileFilterkriterien = require('lists/lib/beurteileFilterkriterien')
 
-module.exports = function (beziehungspartner, filterwert, vergleichsoperator) {
+module.exports = function(
+  beziehungspartner,
+  filterwert,
+  vergleichsoperator
+) {
   // Wenn Feldname = Beziehungspartner, durch die Partner loopen und nur hinzufügen,
   // wessen Name die Bedingung erfüllt
   var bezPartner = []
 
-  if (beziehungspartner && beziehungspartner.length > 0) {
-    beziehungspartner.forEach(function (partner) {
-      var feldwert = partner.Name.toLowerCase()
+  if (
+    beziehungspartner &&
+    beziehungspartner.length
+  ) {
+    beziehungspartner.forEach(function(partner) {
+      var feldwert = partner.Name ? partner.Name.toLowerCase() : null
 
       if (beurteileFilterkriterien(feldwert, filterwert, vergleichsoperator)) {
         bezPartner.push(partner)
