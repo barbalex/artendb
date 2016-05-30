@@ -1,6 +1,7 @@
+/* eslint ecmaVersion: 5 */
 'use strict'
 
-var _ = require('lists/lib/underscore')
+var _ = require('lists/lib/lodash')
 var filtereBeziehungspartner = require('lists/lib/filtereBeziehungspartner')
 var beurteileFilterkriterien = require('lists/lib/beurteileFilterkriterien')
 var convertToCorrectType = require('lists/lib/convertToCorrectType')
@@ -11,45 +12,70 @@ var findStandardTaxonomyInDoc = require('lists/lib/findStandardTaxonomyInDoc')
 // benötigt Objekt und felder
 // retourniert schonKopiert und exportObjekt
 // exportFuer: ermöglicht anpassungen für spezielle Exporte, z.b. für das Artenlistentool
-module.exports = function (objekt, felder, bezInZeilen, fasseTaxonomienZusammen, filterkriterien, exportObjekte, exportFuer) {
+module.exports = function(
+  objekt,
+  felder,
+  bezInZeilen,
+  fasseTaxonomienZusammen,
+  filterkriterien,
+  exportObjekte,
+  exportFuer
+) {
   var exportObjekt = {}
   var schonKopiert = false
   var standardtaxonomie = findStandardTaxonomyInDoc(objekt)
 
   // es müssen Felder übergeben worden sein
   // wenn nicht, aufhören
-  if (!felder || felder.length === 0) {
+  if (
+    !felder ||
+    felder.length === 0
+  ) {
     return {}
   }
 
-  // wenn der Export für das Artenlistentool erstellt wird: Obligatorische Felder einfügen
-  if (exportFuer && exportFuer === 'alt') {
+  // wenn der Export für das Artenlistentool erstellt wird:
+  // Obligatorische Felder einfügen
+  if (
+    exportFuer &&
+    exportFuer === 'alt'
+  ) {
     // Für das ALT obligatorische Felder hinzufügen
     exportObjekt = fuegeObligatorischeFelderFuerAltEin(objekt, exportObjekt)
     // wenn etwas wesentliches versagt, kommt leeres Objekt zurück
     if (_.keys(exportObjekt).length === 0) return {}
 
     // Für das ALT obligatorische Felder aus felder entfernen, sonst gibt es Probleme und es wäre unschön
-    felder = _.reject(felder, function (feld) {
+    felder = _.reject(felder, function(feld) {
       return ['Artwert'].indexOf(feld.Feldname) >= 0
     })
   }
 
   // Neues Objekt aufbauen, das nur die gewünschten Felder enthält
-  _.each(objekt, function (feldwert, feldname) {
-    if (typeof feldwert !== 'object' && feldname !== '_rev') {
-      felder.forEach(function (feld) {
-        if (feld.DsName === 'Objekt' && feld.Feldname === feldname) {
+  _.each(objekt, function(feldwert, feldname) {
+    if (
+      typeof feldwert !== 'object' &&
+      feldname !== '_rev'
+    ) {
+      felder.forEach(function(feld) {
+        if (
+          feld.DsName === 'Objekt' &&
+          feld.Feldname === feldname
+        ) {
           exportObjekt[feldname] = feldwert
         }
-        if (feld.DsName === 'Objekt' && feld.Feldname === 'GUID' && feldname === '_id') {
+        if (
+          feld.DsName === 'Objekt' &&
+          feld.Feldname === 'GUID' &&
+          feldname === '_id'
+        ) {
           exportObjekt.GUID = feldwert
         }
       })
     }
   })
 
-  felder.forEach(function (feld) {
+  felder.forEach(function(feld) {
     var exportFeldname = feld.DsName + ': ' + feld.Feldname
     var feldwert
     var gesuchteDs
@@ -57,8 +83,6 @@ module.exports = function (objekt, felder, bezInZeilen, fasseTaxonomienZusammen,
     var exportBeziehungen
 
     // Taxonomie: Felder übernehmen
-    // 2014.06.15: zweite Bedingung ausgeklammert, weil die Felder nur geliefert wurden, wenn zusammenfassend true war
-    // war: /* && (fasseTaxonomienZusammen || feld.DsName === standardtaxonomie.Name)*/
     if (feld.DsTyp === 'Taxonomie') {
       // Leerwert setzen. Wird überschrieben, falls danach ein Wert gefunden wird
       if (fasseTaxonomienZusammen) {
@@ -67,7 +91,7 @@ module.exports = function (objekt, felder, bezInZeilen, fasseTaxonomienZusammen,
         exportObjekt[exportFeldname] = ''
       }
       // wenn im objekt das zu exportierende Feld vorkommt, den Wert übernehmen
-      if (standardtaxonomie && standardtaxonomie.Eigenschaften && standardtaxonomie.Eigenschaften[feld.Feldname] !== undefined) {
+      if (_.get(standardtaxonomie, ['Eigenschaften', feld.Feldname]) !== undefined) {
         if (fasseTaxonomienZusammen) {
           exportObjekt['Taxonomie(n): ' + feld.Feldname] = standardtaxonomie.Eigenschaften[feld.Feldname]
         } else {
@@ -80,14 +104,20 @@ module.exports = function (objekt, felder, bezInZeilen, fasseTaxonomienZusammen,
     if (feld.DsTyp === 'Datensammlung') {
       // das leere feld setzen. Wird überschrieben, falls danach ein Wert gefunden wird
       exportObjekt[exportFeldname] = ''
-      if (objekt.Eigenschaftensammlungen && objekt.Eigenschaftensammlungen.length > 0) {
+      if (
+        objekt.Eigenschaftensammlungen &&
+        objekt.Eigenschaftensammlungen.length > 0
+      ) {
         // Enthält das objekt diese Datensammlung?
-        gesuchteDs = _.find(objekt.Eigenschaftensammlungen, function (datensammlung) {
-          return datensammlung.Name && datensammlung.Name === feld.DsName
+        gesuchteDs = _.find(objekt.Eigenschaftensammlungen, function(datensammlung) {
+          return _.get(datensammlung, 'Name') === feld.DsName
         })
         if (gesuchteDs) {
           // ja. Wenn die Datensammlung das Feld enthält > exportieren
-          if (gesuchteDs.Eigenschaften && gesuchteDs.Eigenschaften[feld.Feldname] !== undefined) {
+          if (
+            gesuchteDs.Eigenschaften &&
+            gesuchteDs.Eigenschaften[feld.Feldname] !== undefined
+          ) {
             exportObjekt[exportFeldname] = gesuchteDs.Eigenschaften[feld.Feldname]
           }
         }
@@ -104,22 +134,32 @@ module.exports = function (objekt, felder, bezInZeilen, fasseTaxonomienZusammen,
         exportObjekt[feld.DsName + ': Beziehungspartner GUID(s)'] = ''
       }
 
-      if (objekt.Beziehungssammlungen && objekt.Beziehungssammlungen.length > 0) {
+      if (
+        objekt.Beziehungssammlungen &&
+        objekt.Beziehungssammlungen.length > 0
+      ) {
         // suchen, ob das objekt diese Beziehungssammlungen hat
         // suche im objekt die Beziehungssammlung mit Name = feld.DsName
-        bsMitNamen = _.find(objekt.Beziehungssammlungen, function (beziehungssammlung) {
-          return beziehungssammlung.Name && beziehungssammlung.Name === feld.DsName
+        bsMitNamen = _.find(objekt.Beziehungssammlungen, function(beziehungssammlung) {
+          return _.get(beziehungssammlung, 'Name') === feld.DsName
         })
-        if (bsMitNamen && bsMitNamen.Beziehungen && bsMitNamen.Beziehungen.length > 0) {
+        if (
+          bsMitNamen &&
+          bsMitNamen.Beziehungen &&
+          bsMitNamen.Beziehungen.length > 0
+        ) {
           // Beziehungen, die exportiert werden sollen, in der Variablen 'exportBeziehungen' sammeln
           // durch alle Beziehungen loopen und nur diejenigen anfügen, welche die Bedingungen erfüllen
           exportBeziehungen = []
-          bsMitNamen.Beziehungen.forEach(function (beziehung) {
+          bsMitNamen.Beziehungen.forEach(function(beziehung) {
             if (beziehung[feld.Feldname] !== undefined) {
               // das gesuchte Feld kommt in dieser Beziehung vor
               feldwert = convertToCorrectType(beziehung[feld.Feldname])
-              if (filterkriterien && filterkriterien.length > 0) {
-                filterkriterien.forEach(function (filterkriterium) {
+              if (
+                filterkriterien &&
+                filterkriterien.length
+              ) {
+                filterkriterien.forEach(function(filterkriterium) {
                   var dsTyp = filterkriterium.DsTyp
                   var dsName = filterkriterium.DsName
                   var feldname = filterkriterium.Feldname
@@ -127,10 +167,18 @@ module.exports = function (objekt, felder, bezInZeilen, fasseTaxonomienZusammen,
                   var vergleichsoperator = filterkriterium.Vergleichsoperator
                   var beziehungspartner
 
-                  if (dsTyp === 'Beziehung' && dsName === feld.DsName && feldname === feld.Feldname) {
+                  if (
+                    dsTyp === 'Beziehung' &&
+                    dsName === feld.DsName &&
+                    feldname === feld.Feldname
+                  ) {
                     // Beziehungspartner sind Objekte und müssen separat gefiltert werden
                     if (feldname === 'Beziehungspartner') {
-                      beziehungspartner = filtereBeziehungspartner(feldwert, filterwert, vergleichsoperator)
+                      beziehungspartner = filtereBeziehungspartner(
+                        feldwert,
+                        filterwert,
+                        vergleichsoperator
+                      )
                       if (beziehungspartner.length > 0) {
                         beziehung.Beziehungspartner = beziehungspartner
                         exportBeziehungen.push(beziehung)
@@ -156,11 +204,14 @@ module.exports = function (objekt, felder, bezInZeilen, fasseTaxonomienZusammen,
               // pro Treffer eine neue Zeile erstellen
               schonKopiert = false
               // durch Beziehungen loopen
-              exportBeziehungen.forEach(function (exportBeziehung) {
+              exportBeziehungen.forEach(function(exportBeziehung) {
                 // exportObjekt kopieren
                 var exportObjektKopiert = _.clone(exportObjekt)
                 // durch die Felder der Beziehung loopen
-                _.each(exportBeziehung, function (exportBeziehungFeldwert, exportBeziehungFeldname) {
+                _.each(exportBeziehung, function(
+                  exportBeziehungFeldwert,
+                  exportBeziehungFeldname
+                ) {
                   if (exportBeziehungFeldname === 'Beziehungspartner') {
                     // den Beziehungspartner hinzufügen
                     exportObjektKopiert[feld.DsName + ': ' + exportBeziehungFeldname] = exportBeziehungFeldwert[0]
@@ -185,9 +236,9 @@ module.exports = function (objekt, felder, bezInZeilen, fasseTaxonomienZusammen,
             } else {
               // jeden Treffer kommagetrennt in dasselbe Feld einfügen
               // durch Beziehungen loopen
-              exportBeziehungen.forEach(function (exportBeziehung) {
+              exportBeziehungen.forEach(function(exportBeziehung) {
                 // durch die Felder der Beziehung loopen
-                _.each(exportBeziehung, function (feldwert, feldname) {
+                _.each(exportBeziehung, function(feldwert, feldname) {
                   if (feldname === 'Beziehungspartner') {
                     // zuerst die Beziehungspartner in JSON hinzufügen
                     if (!exportObjekt[feld.DsName + ': ' + feldname]) {
