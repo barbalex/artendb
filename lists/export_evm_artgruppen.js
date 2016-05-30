@@ -1,4 +1,5 @@
-function (head, req) {
+/* eslint ecmaVersion: 5 */
+function(head, req) {
   'use strict';
 
   start({
@@ -9,13 +10,18 @@ function (head, req) {
     }
   });
 
-  var _ = require('lists/lib/underscore')
+  var _ = require('lists/lib/lodash')
   var row
   var doc
   var exportJson = {}
   var artgruppe
   var idVorlage = '00005A48-816B-4A30-842F-3B1A5DAAA000'
-  var unbekannt = {'Typ': 'ArtGruppe', 'ArtGruppe': 'Unbekannt', '_id' : '00005A48-816B-4A30-842F-3B1unbekannt', 'AnzArten': 1}
+  var unbekannt = {
+    Typ: 'ArtGruppe',
+    ArtGruppe: 'Unbekannt',
+    _id : '00005A48-816B-4A30-842F-3B1unbekannt',
+    AnzArten: 1
+  }
 
   exportJson.docs = [];
 
@@ -33,7 +39,7 @@ function (head, req) {
   // jetzt noch die Artgruppe unbekannt anfügen
   exportJson.docs.push(unbekannt);
   // sortieren, damit unbekannt ans richtige Ort kommt
-  exportJson.docs = _.sortBy(exportJson.docs, function (ag) {
+  exportJson.docs = _.sortBy(exportJson.docs, function(ag) {
     return ag.ArtGruppe;
   });
 

@@ -1,10 +1,14 @@
+/* eslint ecmaVersion:5 */
 'use strict'
 
 var convertToCorrectType = require('lists/lib/convertToCorrectType')
 
-module.exports = function (filterkriterien) {
-  if (filterkriterien && filterkriterien.length > 0) {
-    filterkriterien.forEach(function (filterkriterium) {
+module.exports = function(filterkriterien) {
+  if (
+    filterkriterien &&
+    filterkriterien.length > 0
+  ) {
+    filterkriterien.forEach(function(filterkriterium) {
       // die id darf nicht in Kleinschrift verwandelt werden
       if (filterkriterium.Feldname !== 'GUID') {
         // true wurde offenbar irgendwie umgewandelt
