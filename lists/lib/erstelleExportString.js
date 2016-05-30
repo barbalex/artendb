@@ -1,20 +1,27 @@
+/* eslint ecmaVersion: 5 */
 'use strict'
 
-var _ = require('lists/lib/underscore')
+var _ = require('lists/lib/lodash')
 
-module.exports = function (exportobjekte) {
+module.exports = function(exportobjekte) {
   var stringTitelzeile = ''
   var stringZeilen = ''
   var stringZeile
 
-  if (exportobjekte && exportobjekte.length > 0) {
-    exportobjekte.forEach(function (exportobjekt) {
+  if (
+    exportobjekte &&
+    exportobjekte.length
+  ) {
+    exportobjekte.forEach(function(exportobjekt) {
       // aus unerklärlichem Grund blieb stringTitelzeile leer, wenn nur ein Datensatz gefiltert wurde
       // daher bei jedem Datensatz prüfen, ob eine Titelzeile erstellt wurde und wenn nötig ergänzen
-      if (stringTitelzeile === '' || stringTitelzeile === ',') {
+      if (
+        stringTitelzeile === '' ||
+        stringTitelzeile === ','
+      ) {
         stringTitelzeile = ''
         // durch Spalten loopen
-        _.each(exportobjekt, function (feldwert, feldname) {
+        _.each(exportobjekt, function(feldwert, feldname) {
           if (stringTitelzeile !== '') {
             stringTitelzeile += ','
           }
@@ -27,7 +34,7 @@ module.exports = function (exportobjekte) {
       }
       stringZeile = ''
       // durch die Felder loopen
-      exportobjekt.forEach(function (feldwert) {
+      exportobjekt.forEach(function(feldwert) {
         if (stringZeile !== '') {
           stringZeile += ','
         }
