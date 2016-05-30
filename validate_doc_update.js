@@ -5,7 +5,7 @@
 
 function(newDoc, oldDoc, userCtx, secObj) {
 
-  var _ = require('lists/lib/underscore')
+  var _ = require('lists/lib/lodash')
   var docIsNew = !oldDoc
   var docWasDeleted = newDoc._deleted === true
   var existingDocWasChanged = !!oldDoc
