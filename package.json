@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/barbalex/ae_api",
   "dependencies": {
-    "eslint": "2.11.0",
+    "eslint": "2.11.1",
     "eslint-config-airbnb": "9.0.1",
     "eslint-plugin-import": "1.8.1",
     "eslint-plugin-jsx-a11y": "1.2.2",
