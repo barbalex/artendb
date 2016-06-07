@@ -12,5 +12,17 @@
   "index.js",
   "modules$",
   "package.json",
-  "readme.md"
+  "readme.md",
+  "src",
+  "routes",
+  "gulp-tasks",
+  "node-modules",
+  "sftpPass",
+  "server",
+  "serverConnection",
+  "language",
+  "etc",
+  "artendb_mac",
+  "License",
+  "ae_api"
 ]
