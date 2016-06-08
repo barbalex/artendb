@@ -1,4 +1,3 @@
-/* eslint ecmaVersion: 5 */
 // fügt die für ALT obligatorischen Felder ein
 // und entfernt diese aus dem übergebenen exportObjekt, falls sie schon darin enthalten waren
 // erhält das Objekt und das exportObjekt
