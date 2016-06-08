@@ -1,4 +1,3 @@
-/* eslint ecmaVersion: 5 */
 /**
  * Benutzt view evab_arten
  * produziert die API für ALT gemäss Vorgaben der EBP

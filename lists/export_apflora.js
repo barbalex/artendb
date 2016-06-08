@@ -1,4 +1,3 @@
-/* eslint ecmaVersion: 5 */
 /**
  * Benutzt view flora
  * produziert die API für apflora Artenliste
