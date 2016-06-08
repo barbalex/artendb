@@ -1,4 +1,3 @@
-/* eslint ecmaVersion: 5 */
 // Hilfsfunktion, die typeof ersetzt und ergänzt
 // typeof gibt bei input-Feldern immer String zurück!
 

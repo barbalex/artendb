@@ -1,5 +1,4 @@
-﻿/* eslint ecmaVersion: 5 */
-function(doc) {
+﻿function(doc) {
   'use strict'
 
   emit(doc._id)
