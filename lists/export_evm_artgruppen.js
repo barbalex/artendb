@@ -1,4 +1,3 @@
-/* eslint ecmaVersion: 5 */
 function(head, req) {
   'use strict';
 
