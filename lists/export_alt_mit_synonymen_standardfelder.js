@@ -1,4 +1,3 @@
-/* eslint ecmaVersion: 5 */
 /**
  * Benutzt view alt_arten_mit_synonymen
  * produziert die API für ALT gemäss Vorgaben der EBP
