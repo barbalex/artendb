@@ -1,4 +1,3 @@
-/* eslint ecmaVersion: 5 */
 'use strict'
 
 // ergänzt ein Objekt um fehlende Informationen seiner Synonyme
