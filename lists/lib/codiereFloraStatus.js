@@ -1,4 +1,3 @@
-/* eslint ecmaVersion: 5 */
 'use strict'
 
 // bekommt einen der existierenden Werte für Status bei Flora

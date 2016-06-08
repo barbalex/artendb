@@ -1,4 +1,3 @@
-/* eslint ecmaVersion: 5 */
 'use strict'
 
 var myTypeOf = require('lists/lib/myTypeOf')
