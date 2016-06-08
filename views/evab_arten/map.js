@@ -1,5 +1,4 @@
-﻿/* eslint ecmaVersion: 5 */
-// stellt alle Objekte zur Verfügung, die in evab gebraucht werden
+﻿// stellt alle Objekte zur Verfügung, die in evab gebraucht werden
 function(doc) {
   'use strict'
 

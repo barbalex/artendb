@@ -1,5 +1,4 @@
-﻿/* eslint ecmaVersion: 5 */
-// wählt alle Dokumente, die GIS-Layer und Betrachtungsdistanz enthalten
+﻿// wählt alle Dokumente, die GIS-Layer und Betrachtungsdistanz enthalten
 // sowie ihre Synonyme
 function(doc) {
   'use strict'
