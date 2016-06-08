@@ -1,4 +1,3 @@
-/* eslint ecmaVersion: 5 */
 'use strict'
 
 var _ = require('lists/lib/lodash')
