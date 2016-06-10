@@ -7,7 +7,7 @@ function(head, req) {
   'use strict'
   
   start({
-    'headers': {
+    headers: {
       'Accept-Charset': 'utf-8',
       'Content-Type': 'json; charset=utf-8;',
       'Accept-Encoding': 'gzip,deflate'
